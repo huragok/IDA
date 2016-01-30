@@ -1,0 +1,94 @@
+\documentclass[letterpaper,oneside]{book}
+\usepackage[letterpaper,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{setspace,epsfig,subfigure,rawfonts,graphicx,graphicx,epsf,psfrag}
+\usepackage{amssymb,amsfonts,amsmath,amsthm}
+\usepackage[noadjust]{cite}
+\usepackage{appendix}
+\usepackage{array}
+\usepackage{eqparbox}
+\usepackage{multirow}
+\usepackage{chngcntr}
+\usepackage{etoolbox}
+\usepackage[chapter]{algorithm}
+\usepackage{algorithmic}
+\usepackage{bm}
+\usepackage{titlesec}
+\usepackage{lipsum}
+\usepackage[nottoc,notlot,notlof]{tocbibind}
+
+
+\renewcommand{\bibname}{References}
+
+\AtBeginEnvironment{subappendices}{%
+\chapter*{Appendix}
+\addcontentsline{toc}{chapter}{Appendices}
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+}
+
+\titleformat{\chapter}[display]
+{\normalfont\LARGE\bf}
+{\chaptertitlename\ \thechapter}{15pt}{}
+  
+\titlespacing*{\chapter}{0pt}{-20pt}{40pt}
+
+\newcounter{exercisectr}
+\newenvironment{exercise}[1][]{%      define a custom environment
+   \medskip\noindent%         create a vertical offset to previous material
+   \refstepcounter{exercisectr}% increment the environment's counter
+   \large{\textbf{Ex. \theexercisectr\ #1}}% or \textbf, \textit, ...
+   \newline%
+   }{\par\medskip}  %          create a vertical offset to following material
+\numberwithin{exercisectr}{chapter}
+
+\begin{document}
+
+\doublespacing
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+
+\title{
+  {\huge A Partial Solution Manual for: \emph{The Elements of Statistical
+  Learning} by Jerome Friedman, Trevor Hastie, and Robert Tibshirani}
+}
+
+\author{
+  Wenhao Wu\\
+  wnhwu@ucdavis.edu\\
+  Dept. ECE, UC Davis\\
+}
+\date{\today}
+\maketitle
+
+\onehalfspacing
+\pagenumbering{roman}
+\tableofcontents
+
+%\newpage
+\pagenumbering{arabic}
+\input{./chapters/preface.tex}
+
+\setcounter{chapter}{1}
+\input{./chapters/the_garden.tex} % Chapter 2
+\input{./chapters/hidden_temple.tex} % Chapter 3
+\input{./chapters/water_palace.tex} % Chapter 4
+\input{./chapters/the_spire.tex} % Chapter 5
+\input{./chapters/the_labyrinth.tex} % Chapter 6
+\input{./chapters/the_rookery.tex} % Chapter 7
+\input{./chapters/the_box.tex} % Chapter 8
+\input{./chapters/the_descent.tex} % Chapter 9
+\input{./chapters/observatory.tex} % Chapter 10
+
+\input{./chapters/the_chasm.tex} % Chapter 11
+\input{./chapters/the_serpent_lake.tex} % Chapter 12
+\input{./chapters/the_thief.tex} % Chapter 13
+\input{./chapters/halcyon_court.tex} % Chapter 14
+\input{./chapters/the_lost_falls.tex} % Chapter 15
+\input{./chapters/the_citadel_of_deceit.tex} % Chapter 16
+\input{./chapters/the_oubliette.tex} % Chapter 17
+\input{./chapters/nocturne.tex} % Chapter 18
+
+\appendix
+\input{./chapters/refs.tex}
+
+
+\end{document}

@@ -1,0 +1,12 @@
+# gedit backup file
+*~
+
+# texlipse
+tmp
+*.synctex.gz
+.project
+.texlipse
+.metadata
+
+
+
