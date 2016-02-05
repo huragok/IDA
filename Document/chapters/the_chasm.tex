@@ -1,2 +1,101 @@
 \chapter{Neural Networks}
 \label{ch:11}
+
+\begin{exercise}
+  In (11.5), set $K=1$, $g_1(T)=T$, we have
+  \begin{align}
+    f_1(X) = \beta_{01} + \beta_1^TZ = \beta_{01} +
+    \sum_{m=1}^M\beta_{m1}\sigma(\alpha_{0m} + \alpha_m^TX)
+  \end{align}
+  The correspondence between (11.1) and (11.5) becomes clearer, as
+  enumerated in Table~\ref{tab:ch11_1_correspondonce}
+  
+  \begin{table}[htb]
+    \caption{Correspondonce between the project pursuit regression and the
+    neural network}
+    \label{tab:ch11_1_correspondonce}
+    \centering
+    \begin{tabular}{c|c}
+      \hline
+      (11.1) & (11.5) \\
+      \hline
+      $\omega_m$ & $\alpha_m$ \\
+      $g_m(\cdot)$ & $\beta_{01}$, $\beta_{m1}\sigma(\alpha_{0m} +
+        \alpha_m^TX)$\\
+      \hline
+    \end{tabular}
+  \end{table}
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \pdv{f}{X} & = \sum_{m=1}^M\beta_m[\sigma(\cdot)(\sigma(\cdot) -
+    1)]\alpha_m \\
+    \pdv{f}{X}{X^T} &= \sum_{m=1}^M\beta_m[(2\sigma(\cdot)-1)(\sigma(\cdot) -
+    1)\sigma(\cdot)]\alpha_m\alpha_m^T
+  \end{align}
+  Since $\sigma(\alpha_{0m} + \alpha_m^TX)\approx 1/2$ when $\alpha_{0m}\approx
+  0$ and $\alpha_{m}\approx 0$, therefore $\pdv{f}{X}{X^T}\approx 0$, i.e. the
+  resulting model is nearly linear.
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    R(\theta) &= -\sum_{i=1}^NR_i(\theta) = -\sum_{i=1}^N\sum_{j=1}^Ky_{ij}\log
+    g_j(T)
+  \end{align}
+  Note that different from regression, each softmax function $g_j(T)$,
+  $j=1,\ldots,K$ is a function of all $T_1,\ldots, T_K$.
+  \begin{subequations}
+    \begin{align}
+      \pdv{R_i}{\beta_{km}} & = -\sum_{j=1}^{K}\frac{y_{ij}}{g_j}
+      \pdv{g_j}{T_k} z_{mi} = \delta_{ki}z_{mi} \\
+      \pdv{R_i}{\alpha_{ml}} & = -\sum_{j=1}^{K}\frac{y_{ij}}{g_j} 
+      \sum_{k=1}^K\pdv{g_j}{T_k}\beta_{km}\sigma'(\alpha_m^Tx_i)x_{il} \notag \\
+      & = \left[\sigma'(\alpha_m^Tx_i)\sum_{k=1}^K\beta_{km}\delta_{ki}
+      \right]x_{il} = s_{mi}x_{il}
+    \end{align}
+    \label{eq:ch11_3_gradient}
+  \end{subequations}
+  
+  It is noted that 
+  \begin{align}
+    \frac{1}{g_j}\pdv{g_j}{T_k} = 
+    \left\{
+      \begin{array}{ll}
+        1-g_j & j=k \\
+        -g_k/\exp(T_j) & j\not=k
+      \end{array}
+    \right.
+  \end{align}
+  As a result, although $g_j(T)$ depends on all $T_1,\ldots, T_K$,
+  $(\partial g_j / \partial T_k) / g_j$ can still be locally evaluated and
+  propagated downward over the link $(T_k, g_j)$. Consequently, the forward and
+  backward propagation equations are pretty much the same as those for the
+  square error loss function. In the forward pass for record $x_i$,
+  $i=1,\ldots,N$, the weights $\beta_{km}$ and $\alpha_{ml}$ are fixed and the
+  predicted $\hat{g}_j(T_i)$ are evaluated. In the backward pass,
+  $(y_{ij}/g_j)(\partial g_j/\partial T_k)$ are evaluated and propagated to
+  $T_k$, where $\delta_{ki}$ is computed, and then back-propagated to give
+  $s_{mi}$ at $Z_m$. Then the gradients are evaluated as in
+  Eq.~\eqref{eq:ch11_3_gradient}. The gradient descent update is exactly the
+  same as (11.13).
+\end{exercise}
+
+\begin{exercise}
+  If the network has no hidden layer, we have
+  \begin{align}
+    g_j(x) & = \frac{\exp(T_j)}{\sum_{k=1}^K\exp(T_k)} =
+    \frac{\exp(\beta_j^Tx)}{\sum_{k=1}^K\exp(\beta_k^Tx)},
+  \end{align}
+  exactly the same as the multinomial logistic model.
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
