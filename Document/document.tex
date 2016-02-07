@@ -35,12 +35,29 @@
 
 \newcounter{exercisectr}
 \newenvironment{exercise}[1][]{%      define a custom environment
-   \medskip\noindent%         create a vertical offset to previous material
-   \refstepcounter{exercisectr}% increment the environment's counter
-   \large{\textbf{Ex. \theexercisectr\ #1}}% or \textbf, \textit, ...
-   \newline%
-   }{\par\medskip}  %          create a vertical offset to following material
+  \medskip\noindent%         create a vertical offset to previous material
+  \refstepcounter{exercisectr}% increment the environment's counter
+  \large{\textbf{Ex. \theexercisectr\ #1}}% or \textbf, \textit, ...
+  \newline%
+  \setcounter{exerciseSectionctr}{0}
+}{\par\medskip}  %          create a vertical offset to following material
 \numberwithin{exercisectr}{chapter}
+
+\newcounter{exerciseSectionctr}
+\newenvironment{exerciseSection}{
+  \medskip\noindent%         create a vertical offset to previous material
+  \refstepcounter{exerciseSectionctr}% increment the environment's counter
+  \textbf{(\alph{exerciseSectionctr})\ }% or \textbf,.
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{property}{Property}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\numberwithin{theorem}{chapter} % important bit
+\numberwithin{lemma}{chapter} % important bit
+\numberwithin{proposition}{chapter} % important bit
 
 \begin{document}
 

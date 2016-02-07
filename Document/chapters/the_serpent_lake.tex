@@ -1,2 +1,310 @@
 \chapter{Support Vector Machines and Flexible Discriminants}
 \label{ch:12}
+
+\begin{exercise}
+  Firstly, we prove that for (12.8), the optimal solution must satisfy 
+  $\hat{\xi}_i = [1-y_i(x_i^ T\hat{\beta} + \hat{\beta_0})]_+$. To see this,
+  from the constraints in (12.8), we have $\hat{\xi}_i \geq [1-y_i(x_i^
+  T\hat{\beta} + \hat{\beta_0})]_+$. Assume for contradiction that
+  $\exists i \mbox{ such that }\hat{\xi} > [1-y_i(x_i^ T\hat{\beta} +
+  \hat{\beta_0})]_+$, then setting $\hat{\xi}_i\leftarrow [1-y_i(x_i^
+  T\hat{\beta} + \hat{\beta_0})]_+$ results in smaller objective in (12.8),
+  which is in contradiction to the fact that $\hat{\xi}_i$ is from an optimal
+  solution.
+  
+  On the other hand, $\xi_i = [1-y_i(x_i^ T\beta + \beta_0)]_+ \Rightarrow
+  \xi_i\geq 0,\,y_i(x_i^ T\beta + \beta_0)\geq 1-\xi_i$. Therefore, the solution to (12.8) is the same as
+  \begin{align}
+    & \min_{\beta,\beta_0}\frac{1}{2}\|\beta\|^2 + C\sum_{i=1}^N\xi_i\\
+    & \mbox{s.t. } \xi_i = [1-y_i(x_i^ T\beta + \beta_0)]_+,\,\forall　i
+  \end{align}
+  which is exactly the same as (12.25).
+\end{exercise}
+
+\begin{exercise}
+  \label{ex:12_2}
+  Define kernel $K(a, b) = \sum_{j=1}^pa_jb_j$, i.e. $\psi_j(x) = x_j,
+  \gamma_j=1$ for $j = 1,\ldots,p$. Consequently, $g(x) =
+  \sum_{j=1}^p\beta_jx_j \Leftrightarrow g(x)\in\mathcal{H}_K$. Consequently, 
+  \begin{align}
+    (12.25) \Leftrightarrow &\min_{g,\beta_0}\sum_{i=1}^N [1-y_i(g(x_i) +
+    \beta_0)]_+ + \frac{\lambda}{2} \|g\|_{\mathcal{H}_K}^2
+  \end{align}
+  Denote $L(y_i, g(x_i);\beta_0) = [1-y_i(g(x_i) + \beta_0)]_+ = L_i(\beta_0)$,
+  then
+  \begin{align}
+    (12.25) \Leftrightarrow & \min_{\beta_0}\left\{\min_{g}\sum_{i=1}^N
+    L_i(\beta_0) + \frac{\lambda}{2} \|g\|_{\mathcal{H}_K}^2 \right\}.
+  \end{align}
+  where the inner $\min$ must have a solution in the form of
+  $g(x)=\sum_{i=1}^N\alpha_iK(x, x_i)$ as per (5.50)(5.51), and we have
+  $\|g\|_{\mathcal{H}_K}^2 = \alpha^TK\alpha$. Therefore
+  \begin{align}
+    (12.25) \Leftrightarrow & \min_{\beta_0}\left\{\min_{\alpha}\sum_{i=1}^N
+    [1-y_i(\sum_{j=1}^N\alpha_jK(x_j, x_i)+ \beta_0)]_+ + \frac{\lambda}{2}
+    \alpha^TK\alpha \right\} \\ 
+    \Leftrightarrow & \min_{\beta_0, \alpha}\sum_{i=1}^N
+    [1-y_i(\sum_{j=1}^N\alpha_jK(x_j, x_i)+ \beta_0)]_+ + \frac{\lambda}{2}
+    \alpha^TK\alpha 
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  Similar to Ex.~\eqref{ex:12_2}. Denote $g(x)=\sum_{m=1}^M\beta_mh_m(x)$.
+  Without penalting the constant term, we have
+  \begin{align}
+    H(\beta, \beta_0) = \sum_{i=1}^NV(y_i-\beta_0-g(x_i)) +
+    \frac{\lambda}{2}\sum_{m=1}^M\beta_m^２
+  \end{align}
+  Again we break the minimization problem into 2 steps:
+  \begin{align}
+    \min_{\beta_0,\beta}H(\beta, \beta_0) =
+    \min_{\beta_0}\left\{\min_{\beta|\beta_0}H(\beta, \beta_0)\right\}
+  \end{align}
+  Consider saquare error loss $V(r) = r^2$, the inner min problem is in the form
+  of 
+  \begin{align}
+    & \min_{\beta}\sum_{i=1}^N
+    (y_i-\beta_0-H\beta)^2 + \frac{\lambda}{2}\beta^T\beta \\
+    \Leftrightarrow & \min_\alpha \|\mathbf{y} - \beta_0\mathbf{1} -
+    \mathbf{K}\bm{\alpha}\|_F^2 +
+    \frac{\lambda}{2}\bm{\alpha}^T\mathbf{K}\bm{\alpha}
+  \end{align}
+  whose solution is $\hat{\alpha} = (\mathbf{K} +
+  \lambda\mathbf{I}/2)^{-1}\mathbf{y}_{\beta_0}$, $\mathbf{y}_{\beta_0} =
+  \mathbf{y} - \beta_0\mathbf{1}$. Consequently, the outer min problem w.r.t
+  $\beta_0$ is in the form of
+  \begin{align}
+    \min_{\beta_0} \mathbf{y}_{\beta_0}^T\left[\mathbf{I} - (\mathbf{K} +
+    \lambda\mathbf{I}/2)^{-1}\mathbf{K}\right]\mathbf{y}_{\beta_0}
+  \end{align}
+  which is a quadratic problem.
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    \begin{align}
+      \mbox{Left} &= (x -\bar{x}_k)^TUU^T(x -\bar{x}_k) - (x
+      -\bar{x}_{k'})^TUU^T(x -\bar{x}_{k'}) 
+    \end{align}
+    where $U=W^{-1/2}V^*$, the $L$ columns of $V^*$ are the eigen vectors of
+    $B^* = (W^{-1/2})^TBW^{-1/2}$, where $B$ is the between-class covariance.
+    \begin{align}
+      \mbox{Right} &= (x -\bar{x}_k)^TW^{-1}(x -\bar{x}_k) - (x
+      -\bar{x}_{k'})^TW^{-1}(x -\bar{x}_{k'}) 
+    \end{align}
+    Consequently,
+    \begin{align}
+      & \mbox{Left} - \mbox{Right} \notag \\
+      = & 2(\bar{x}_k - \bar{x}_{k'})^T(W^{-1} - UU^T)x + (\bar{x}_k -
+      \bar{x}_{k'})^T[W^{-1}-UU^T](\bar{x}_k + \bar{x}_{k'})\\
+      = & 2(\bar{x}_k - \bar{x}_{k'})^TW^{-1/2}(I - V^*(V^*)^T)(W^{-1/2})^Tx
+      \notag\\ 
+      + & (\bar{x}_k - \bar{x}_{k'})^TW^{-1/2}(I -
+      V^*(V^*)^T)(W^{-1/2})^T(\bar{x}_k + \bar{x}_{k'})
+    \end{align}
+    Since $(\bar{x}_k -\bar{x}_{k'})^T\in R(M)$ (row space), $(\bar{x}_k
+    -\bar{x}_{k'})^TW^{-1/2}\in R(M^*)$, therefore $(W^{-1/2})^T(\bar{x}_k
+    -\bar{x}_{k'}) \in C(V^*)$  (column space). Therefore
+    \begin{align}
+      (\bar{x}_k -\bar{x}_{k'})^TW^{-1/2}(I - V^*(V^*)^T) = 0
+    \end{align}
+    thus Left = Right.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    ???
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    The $i$-th row of $\mathbf{Y}\theta$ is
+    \begin{align}
+      (\mathbf{Y}\theta)_i = \sum_{j=1}^K 1(Y_{ij}=1)\theta_j = \theta(g_i)
+    \end{align}
+    (since there are exactly one $j$ where $_{ij}=1$ for each $i$). The $i$-th
+    row of $\mathbf{H}\beta$ is
+    \begin{align}
+      (\mathbf{H}\beta)_i = \sum_{j=1}^K\beta_jh_j(x_i)
+    \end{align}
+    therefore
+    \begin{align}
+      \sum_{i=1}^N(\theta(g_i) - \beta^Th(x_i))^2 = \|\mathbf{Y}\theta -
+      \mathbf{H}\beta\| ^2
+    \end{align}
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    According to the definition, $(\mathbf{D}_{\pi})_{kk}$ is the empirical
+    frequency of class $k$, and $\theta_k$ is the score for class $k$.
+    $\theta^T\mathbf{D}_{\pi}1=0$ implies that the average score over the $N$
+    records is 0; $\theta^T\mathbf{D}_{\pi}\theta=1$ means the variance
+    of the over the $N$ records is 1.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    Fixing $\theta$ the optimal $\beta$ is
+    \begin{align}
+      \hat{\beta} = (\mathbf{H}^T\mathbf{H})^{-1}\mathbf{H}^T\mathbf{Y}\theta
+    \end{align}
+    therefore (12.65) can be rewritten as 
+    \begin{align}
+      & \min_{\theta}\|(\mathbf{I}-\mathbf{S})\mathbf{Y}\theta\|^2
+      \Leftrightarrow  \min_{\theta} \theta^T\mathbf{Y}^T\mathbf{Y}\theta -
+      \theta^T\mathbf{Y}^T\mathbf{S}\mathbf{Y}\theta
+    \end{align}
+    where $\mathbf{S} = \mathbf{H}(\mathbf{H}^T\mathbf{H})^{-1}\mathbf{H}^T$.
+    Since  $\theta^T\mathbf{Y}^T\mathbf{Y}\theta = N$, this minimization is
+    equivalent to 
+    \begin{align}
+      \max_{\theta}\theta^T\mathbf{Y}^T\mathbf{S}\mathbf{Y}\theta
+    \end{align}
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    Suppose that the SVD of $\mathbf{H} = \mathbf{U\Sigma V}^T$, then
+    $\mathbf{S} = \mathbf{UU}^T$ where $\mathbf{U}$ is a $N$-by-$l$ orthonormal
+    matrix. Therefore $\mathbf{S}$ has $L$ eigenvalues of 1 and $N-L$
+    eigenvalues of 0. Since constant function is included in $h_j$, 
+    $\mathbf{H}\not=0$, therefore $L>0$, so the largest eigenvalue is 1.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    (12.53) can be rewritten as
+    \begin{align}
+      ASR = \frac{1}{N}\|\mathbf{Y\Theta}-\mathbf{HB}\|_F^2
+    \end{align}
+    Similar to (c) the solution is the same as
+    \begin{align}
+      \label{eq:ch_12_6_os}
+      & \max_{\Theta}\tr{\mathbf{\Theta}^T\mathbf{Y}^T\mathbf{SY\Theta}} \\
+      & \mbox{s.t. } \mathbf{\Theta}^T\mathbf{Y}^T\mathbf{Y\Theta} = \mathbf{I}
+    \end{align}
+    Therefore $\mathbf{Y}\Theta$ are the $K$ largest eigenvectors of
+    $\mathbf{S}$.
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  The penalized optimal scoring problem is in the form of
+  \begin{align}
+    \min_{\Theta, \mathbf{B}}\|\mathbf{Y\Theta}-\mathbf{HB}\|_F^2 +
+    \lambda\tr(\mathbf{B}^T\mathbf{\Omega B})
+    \label{eq:ch12_7_b}
+  \end{align}
+  Given $\mathbf{\Theta}$, the optimal $\mathbf{B}$ is
+  \begin{align}
+    \hat{\mathbf{B}} =
+    (\mathbf{H}^T\mathbf{H}+\lambda\mathbf{\Omega})^{-1}
+    \mathbf{H}^T\mathbf{Y\Theta}
+  \end{align}
+  Substitute into Eq.~\eqref{eq:ch12_7_b}, we have
+  \begin{align}
+    & \min_{\mathbf{\Theta}}
+    \tr\left(\mathbf{\Theta}^T\mathbf{Y}^T\mathbf{Y\Theta} -
+    \mathbf{\Theta}^T\mathbf{Y}^T\mathbf{S}\mathbf{Y\Theta}\right) \\
+    & \mbox{s.t. }
+    \mathbf{\Theta}^T\mathbf{D}_{\pi}\mathbf{\Theta} = \mathbf{I}
+  \end{align}
+  where $\mathbf{S} = \mathbf{H}(\mathbf{H}^T\mathbf{H}+\lambda \mathbf{\Omega
+  })^{-1}\mathbf{H}^T$. Therefore $\mathbf{Y\Theta}$ are still the eigenvectors
+  of $\mathbf{S}$.
+\end{exercise}
+
+\begin{exercise}
+  I found the proof to this problem on~\cite{hastie1994flexible}. I am trying to
+  follow it the best I can and here is my interpretation. Assuming that $\bar{x}
+  = 0$. We first perform the generalized SVD:
+  \begin{align}
+    & (\mathbf{Y}^T\mathbf{Y})^{-1}\mathbf{Y}^T\mathbf{X}
+    (\mathbf{X}^T\mathbf{X})^{-1} = \mathbf{UDV}^T \\
+    & \mbox{s.t. } \mathbf{U}^T\mathbf{Y}^T\mathbf{YU} = \mathbf{I},\, 
+    \mathbf{V}^T\mathbf{X}^T\mathbf{XV} = \mathbf{I}
+  \end{align}
+  Later we will show that both $\beta_l$ and $v_l$ are proportional to the
+  colunns of $\mathbf{V}$. From the GSVD, $\mathbf{U}$ and $\mathbf{V}$ satisfy
+  the following 2 equations:
+  \begin{subequations}
+    \begin{align}
+      \mathbf{U}^T\mathbf{Y}^T\mathbf{X}
+      (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{YU} & = \mathbf{D}^2
+      \label{eq:ch_12_8_s1}\\
+      \mathbf{V}^T\mathbf{X}^T\mathbf{Y}
+      (\mathbf{Y}^T\mathbf{Y})^{-1} \mathbf{Y}^T\mathbf{XV} &= \mathbf{D}^2
+      \label{eq:ch_12_8_s2}
+    \end{align}
+  \end{subequations}
+  of which the proof is trivial. First we show that the LDA's discriminant
+  directions $v_l$ are parallel to the columns of $\mathbf{V}$:
+  \begin{proposition}
+    For the LDA problem (Fisher)
+    \begin{align}
+      \max_{\mathbf{A}}\tr(\mathbf{A}^T\mathbf{BA}),\;\mbox{s.t. }
+      \mathbf{A}^T\mathbf{WA} = \mathbf{I}
+    \end{align}
+    where 
+    \begin{subequations}
+      \begin{align}
+        \mathbf{B} & = \mathbf{X}^T\mathbf{Y}
+        (\mathbf{Y}^T\mathbf{Y})^{-1} \mathbf{Y}^T\mathbf{X} \\
+        \mathbf{W} & = \mathbf{T} - \mathbf{B} \\
+        \mathbf{T} & = \mathbf{X}^T\mathbf{X}
+      \end{align}
+    \end{subequations}
+    are the between-class, within-class and total variance (up to
+    normalization), the solution is
+    \begin{align}
+      \hat{\mathbf{A}} = \mathbf{V}(\mathbf{I} - \mathbf{D}^2)^{-1/2}
+    \end{align}
+  \end{proposition}
+  \begin{proof}
+    From Eq.~\eqref{eq:ch_12_8_s2} and the second constraint of the GSVD, it is
+    easy to see $\hat{\mathbf{A}}^T\mathbf{W}\hat{\mathbf{A}} = \mathbf{I}$. On
+    the other hand, $\hat{\mathbf{A}}$ diagonalizes $\mathbf{B}$ by
+    $\hat{\mathbf{A}}^T\mathbf{B}\hat{\mathbf{A}} = (\mathbf{I} -
+    \mathbf{D}^2)^{-1}\mathbf{D}^2$.
+  \end{proof}
+  
+  Next we show that the $\beta_l$ from optimal scoring are also parallel to the
+  columns of $\mathbf{V}$
+  \begin{proposition}
+    The optimal scoring problem as in Eq.~\eqref{eq:ch_12_6_os} has solution
+    $\hat{\mathbf{\Theta}} = \mathbf{U}$.
+  \end{proposition}
+  \begin{proof}
+    From the first constraint of GSVD, obviously
+    $\mathbf{U}^T\mathbf{Y}^T\mathbf{YU}=\mathbf{I}$. from
+    Eq.~\eqref{eq:ch_12_8_s1}, $\mathbf{U}$ diagonalizes
+    $\mathbf{Y}^T\mathbf{SY}$ by $\mathbf{U}^T\mathbf{Y}^T\mathbf{SY}
+    \mathbf{U} = \mathbf{D}^2$.
+  \end{proof}
+  Consequently, we have $\hat{\mathbf{B}} =
+  (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{YU} = \mathbf{VD}$. We can
+  see that $v_l$ (columns of $\hat{\mathbf{A}}$) and $\beta_l$ (columns of
+  $\hat{\mathbf{B}}$) differ by only a diagonal matrix $(\mathbf{I} -
+  \mathbf{D}^2)^{-1}\mathbf{D}$.
+\end{exercise}
+
+\begin{exercise}
+  The reduced features are simply
+  \begin{align}
+    \mathbf{X}^* = \mathbf{X}\hat{\mathbf{B}}= \mathbf{SY}
+  \end{align}
+  therefore the optimal scoring can be computed by 
+  \begin{align}
+    & \max_{\mathbf{\Theta}}\mathbf{\Theta}^T\mathbf{Y}^T
+    [\mathbf{SY}(\mathbf{Y}^T\mathbf{SY})^{-1}\mathbf{Y}^T\mathbf{S}^T]
+    \mathbf{Y\Theta} \\
+    & \mbox{s.t. } \mathbf{\Theta}^T\mathbf{Y}^T\mathbf{Y\Theta} = N\mathbf{I}
+  \end{align}
+  with trivial manipulations one can see that the objective function is exactly
+  the same as optimal scoring on original features.
+\end{exercise}
+
+\begin{exercise}
+
+\end{exercise}
