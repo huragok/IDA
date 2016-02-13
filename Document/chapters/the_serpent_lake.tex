@@ -306,5 +306,93 @@
 \end{exercise}
 
 \begin{exercise}
+  The derivation for the general $K$-class GDA can be found
+  in~\cite{baudat2000generalized}. The kernel LDA (Fisher) is in the form of
+  \begin{align}
+    \max_{\mathbf{a}}
+    \frac{\mathbf{a}^T\mathbf{B}\mathbf{a}} {\mathbf{a}^T\mathbf{W}\mathbf{a}}
+  \end{align}
+  where 
+  \begin{align}
+    \mathbf{B} & = (\bar{\mathbf{h}}_1 - \bar{\mathbf{h}}_2)(\bar{\mathbf{h}}_1
+    - \bar{\mathbf{h}}_2)^T \\
+    \bar{\mathbf{h}}_1 &= \frac{1}{N_1}\sum_{i\in\mathcal{C}_1}\mathbf{h}(x_i)
+    \\
+    \bar{\mathbf{h}}_2 &= \frac{1}{N_2}\sum_{i\in\mathcal{C}_2}\mathbf{h}(x_i)
+    \\
+  \end{align}
+  (up to constant) and $N_1 = |\mathcal{C}_1|$, $N_2 = |\mathcal{C}_2|$ are
+  the numbers of data poitns in class 1, 2, respectively. The discriminant vector $\mathbf{a}$ is a
+  linear combination
+  \begin{align}
+    \mathbf{a} = \sum_{i = 1}^N \alpha_i\mathbf{h}(x_i)
+  \end{align}
+  therefore
+  \begin{align}
+    \mathbf{a}^T\mathbf{B}\mathbf{a} = \bm{\alpha}^T
+    (\mathbf{k}_1-\mathbf{k}_2)(\mathbf{k}_1-\mathbf{k}_2)^T\bm{\alpha}
+  \end{align}
+  where
+  \begin{align}
+    \{\mathbf{k}_1\}_i = \frac{1}{N_1}\sum_{j\in\mathcal{C}_1}K_{ij}, \;
+    \{\mathbf{k}_2\}_i = \frac{1}{N_2}\sum_{j\in\mathcal{C}_2}K_{ij}, \;
+    i = 1,\ldots,N
+  \end{align}
+  On the other hand, $\mathbf{W} = \mathbf{W}_h +\gamma\mathbf{I}$, where
+  \begin{align}
+    \mathbf{W}_h =\sum_{i\in\mathcal{C}_1}
+    \left(\mathbf{h}(x_i)\mathbf{h}(x_i)^T -
+    \bar{\mathbf{h}}_1 \bar{\mathbf{h}}_1^T\right) +
+    \sum_{i\in\mathcal{C}_2} \left(\mathbf{h}(x_i)\mathbf{h}(x_i)^T -
+    \bar{\mathbf{h}}_2 \bar{\mathbf{h}}_2^T\right)
+  \end{align}
+  (up to constant) therefore
+  \begin{align}
+    \mathbf{a}^T\mathbf{W}_h\mathbf{a} &= \bm{\alpha}^T
+    \mathbf{K}^2\bm{\alpha}-
+    N_1\bm{\alpha}^T\mathbf{k}_1\mathbf{k}_1^T\bm{\alpha} - 
+    N_2\bm{\alpha}^T\mathbf{k}_2\mathbf{k}_2^T\bm{\alpha}
+  \end{align}
+  and $\mathbf{a}^T\mathbf{a} = \bm{\alpha}^T \mathbf{K}\bm{\alpha}$.
+  Consequently, the model depend on $h(\cdot)$ only via the
+  $N$-by-$N$ matrix $\mathbf{K}$.
+\end{exercise}
 
+\begin{exercise}
+  \begin{exerciseSection}
+    \begin{align}
+      P(X=x|G=k) &= \frac{P(X=x,G=k)}{\int_{x}P(X=x,G=k)dx} \notag\\
+      &= \frac{\sum_{r = 1}^R\pi_rP_r(G=k)\phi(x;\mu_r,\Sigma)} {\sum_{r =
+      1}^R\pi_rP_r(G=k)\int_x\phi(x;\mu_r,\Sigma)dx} \notag\\
+      &= \frac{\sum_{r = 1}^R\pi_rP_r(G=k)\phi(x;\mu_r,\Sigma)} {\sum_{r =
+      1}^R\pi_rP_r(G=k)}
+    \end{align}
+    Compare with (12.59), we can see that, by setting
+    \begin{align}
+      \pi_{kr} = \frac{\sum_{r = 1}^R\pi_rP_r(G=k)} {\sum_{r =
+      1}^R\pi_rP_r(G=k)},\; R_k = R,\;\mu_{kr} = \mu_r
+    \end{align}
+    MDA2 is a generalization of MDA.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    E-step: compute the responsibility of subclass $c_{kr}$ within class $k$ for
+    each class-$k$ observation ($g_i=k$):
+    \begin{align}
+      W(c_{kr}|x_i, g_i) = \frac{\pi_{kr}\phi(x_i;\mu_r,\Sigma)}
+      {\sum_{r=1}^R\pi_{kr}\phi(x_i;\mu_r,\Sigma)}
+    \end{align}
+    M-step: MLE on $\mu_r$ and $\Sigma$
+    \begin{align}
+      \mu_r &= \frac{\sum_{k = 1}^K\sum_{i:g_i = k}W(c_{kr}|x_i, g_i)x_i} 
+      {\sum_{k = 1}^K\sum_{i:g_i = k}W(c_{kr}|x_i, g_i)} \\
+      \Sigma &= \frac{\sum_{k = 1}^K \sum_{i:g_i = k} \sum_{r=1}^R W(c_{kr}|x_i,
+      g_i)(x_i - \mu_r)(x_i - \mu_r)^T}
+      {\sum_{k = 1}^K \sum_{i:g_i = k} \sum_{r=1}^R W(c_{kr}|x_i, g_i)}
+    \end{align}
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    ???
+  \end{exerciseSection}
 \end{exercise}
