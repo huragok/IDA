@@ -1,2 +1,231 @@
 \chapter{Prototype Methods and Nearest-Neighbors}
 \label{ch:13}
+
+\begin{exercise}
+  Again $k = 1,\ldots,K$ are the indices of clusters/classes, $r = 1,\ldots,R$
+  are the indices of cluster centers/Gaussian components.
+  
+  For each precictor labeled to class $k$, namely $\{x_i|g_i = k\}$, in terms of
+  the E-step,
+  \begin{itemize}
+    \item For EM algorithm, its responsibility to component $r$ is evaluated as
+    \begin{align}
+      \gamma_{kr}(x_i) =
+      \frac{\pi_{kr}\phi(x_i;\mu_{kr},\Sigma)}
+      {\sum_{s=1}^R\pi_{kr}\phi(x_i;\mu_{ks},\Sigma)}
+    \end{align}
+    \item For k-means algorithm, each predictor belongs to exactly 1 cluster
+    center, therefore its counterpart of responsibility is binary-valued:
+    \begin{align}
+      \gamma_{kr}(x_i) = \left\{
+        \begin{array}{ll}
+          1 & \mbox{if } \|x_i - \mu_{kr}\| \leq \|x_i - \mu_{ks}\|,
+          s=1,\ldots,R \\
+          0 & \mbox{otherwise}
+        \end{array}
+      \right.
+    \end{align}
+  \end{itemize}
+  
+  In terms of the M-step,
+  \begin{itemize}
+    \item For EM algorithm, the component means are updated as a weighted
+    average
+    \begin{align}
+      \mu_{kr} =
+      \frac{\sum_{i:g_i=k}\gamma_{kr}(x_i)x_i}{\sum_{i:g_i=k}\gamma_{kr}}
+      \label{eq:ch_13_1_mean}
+    \end{align}
+    and the mixing probability is updated as
+    \begin{align}
+      \pi_{kr} = \sum_{i:g_i=k}\frac{\gamma_{kr}(x_i)}{N_{k}}
+    \end{align}
+    where $N_k$ is the number of records labeld to class $k$.
+    \item For k-means, the cluster center is taken as an unweighted average over
+    all $x_i$ closest to it. Using the binary-valued responsibility definition,
+    $\mu_{kr}$ is exactly the same as Eq.~\eqref{eq:ch_13_1_mean}.
+  \end{itemize}
+  To draw a connection between EM and k-means, as $\sigma\rightarrow 0$,
+  $\phi(x_i;\mu_{kr},\Sigma)\gg\phi(x_i;\mu_{ks},\Sigma)$ if $\|x_i - \mu_{kr}\|
+  < \|x_i - \mu_{ks}\|$, therefore the responsibility for EM approaches that of
+  k-means. And $\pi_{kr}$ becomes the proportion of points in $\{x_i|g_i = k\}$
+  that are closer to $r$ than any other components centers.
+\end{exercise}
+
+\begin{exercise}
+  This problem is similar as Ex 2.3. Denote $P_0(r, N)$ as the probability of
+  the following event:
+  \blockquote{Among the $N$ i.i.d uniformly distributed points, there is none
+  within the ball centered at 0 with radius of $r$.}
+  thus $P_0(r, N) = P_0(r)^N$, where $P_0(r) = P_0(r, 1)$. Since the points are
+  uniformly distributed within the $p$-dim cube of edge length 1, $P_0(r, 1)$
+  simply equals to the ratio between the volume of spaces out of the $r$-ball
+  but within the cube, and the volume of the cube. Consequently,
+  \begin{align}
+    P_0(r, N) = (1 - v_pr^p)^N
+  \end{align}
+  The median $R_{med}$ satisfy $P_0(R_{med}, N) = 1 /2$, therefore
+  \begin{align}
+    R_{med} = v_p^{-1/p}(1-2^{-1/N})^{1/p}
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  Since $\sum_{k\not=k^*}p_k(x) = 1 - p_{k^*}(x)$
+  \begin{align}
+    \sum_{k=1}^Kp_k(x)(1 - p_k(x)) & = p_{k^*}(x)(1 - p_{k^*}(x)) +
+    \sum_{k\not=k^*}p_k(x)(1 - p_k(x)) \notag \\
+    & =  p_{k^*}(x)(1 - p_{k^*}(x)) + (1 - p_{k^*}(x)) -
+    \sum_{k\not=k^*}p_k(x)^2 \notag \\
+    & \leq p_{k^*}(x)(1 - p_{k^*}(x)) + (1 - p_{k^*}(x)) -
+    \frac{(\sum_{k\not=k^*}p_k(x))^2}{K - 1} \notag \\
+    & ＝ ２(1 - p_{k^*}(x)) - \frac{K}{K - 1}(1 - p_{k^*}(x))^2
+  \end{align}
+  where we made use of Cauchy-Schwarz inequality.
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    \begin{align}
+      \mathbf{A} & = \mathbf{QR} \notag \\
+      & = \left[
+        \begin{array}{cc}
+          \cos\theta & -\sin\theta \\
+          \sin\theta & \cos\theta
+        \end{array}
+      \right]
+      \left[
+        \begin{array}{cc}
+          a & 0 \\
+          0 & b
+        \end{array}
+      \right]
+      \left[
+        \begin{array}{cc}
+          1 & \lambda \\
+          0 & 1
+        \end{array}
+      \right]
+    \end{align}
+    where $\theta$ represents the angle of rotation, $a$, $b$ represent the scale
+    in $x$ and $y$ direction and $\lambda$ represent the shear.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    Denote $\mathbf{J}$ as the Jacobian (1-by-2) of $F$ at
+    $c+x_0+\mathbf{A}(\mathbf{x} - \mathbf{x}_0)$, we have
+    \begin{subequations}
+      \begin{align}
+        \pdv{F}{\theta} & =\mathbf{J}\left[
+          \begin{array}{cc}
+            0 & -1 \\
+            1 & 0
+          \end{array}
+        \right]\mathbf{A}(\mathbf{x} - \mathbf{x}_0) \\
+        \pdv{F}{a} &= \mathbf{J}\left[
+          \begin{array}{c}
+            \cos\theta \\
+            \sin\theta
+          \end{array}
+        \right]\left[
+          \begin{array}{cc}
+            1 & \lambda
+          \end{array}
+        \right](\mathbf{x} - \mathbf{x}_0) \\
+        \pdv{F}{b} &= \mathbf{J}\left[
+          \begin{array}{c}
+            -\sin\theta \\
+            \cos\theta
+          \end{array}
+        \right]\left[
+          \begin{array}{cc}
+            0 & 1
+          \end{array}
+        \right](\mathbf{x} - \mathbf{x}_0) \\
+        \pdv{F}{\lambda} &= \mathbf{J}\left[
+          \begin{array}{c}
+            a\cos\theta \\
+            a\sin\theta
+          \end{array}
+        \right]\left[
+          \begin{array}{cc}
+            0 & 1
+          \end{array}
+        \right](\mathbf{x} - \mathbf{x}_0)
+      \end{align}
+    \end{subequations}
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    It seems that the key to this procedure is to evaluate $\mathbf{J}$ given a
+    coordinate $\mathbf{x}$. Denote the 2-D kernel smoother as $K(\mathbf{u},
+    \mathbf{v})$, then we solve the locally weighted regresion at $\mathbf{x}$:
+    \begin{align}
+      \min_{\alpha(\mathbf{x}), \bm{\beta}(\mathbf{x})} \sum_{i = 1}^{256}
+      K(\mathbf{x},\mathbf{x}_i)[F(\mathbf{x}_i)-
+      \alpha(\mathbf{x})-\bm{\beta}(\mathbf{x})^T\mathbf{x}_i]
+    \end{align}
+    Then we can use use $\bm{\beta}(\mathbf{x})^T$ as $\mathbf{J}(\mathbf{x})$
+    to compute the tangent space.
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  Since
+  \begin{subequations}
+    \begin{align}
+      & N\tr(\bar{\mathbf{B}}\bar{\mathbf{B}}^T) = \sum_{i=1}^N
+      \tr(\mathbf{B}_i\bar{\mathbf{B}}^T) = \sum_{i=1}^N
+      \tr(\bar{\mathbf{B}}\mathbf{B}_i^T) \\ 
+      & N\tr(\bar{\mathbf{B}}\mathbf{M}^T) = N\tr(\mathbf{M}\bar{\mathbf{B}}^T)=
+      \sum_{i=1}^N \tr(\mathbf{B}_i\mathbf{M}^T) = \sum_{i=1}^N
+      \tr(\mathbf{M}\mathbf{B}_i^T),
+    \end{align}
+  \end{subequations}
+  it is easy to show that
+  \begin{align}
+    \sum_{i=1}^N \tr[(\mathbf{B}_i - \mathbf{M})^2] = \sum_{i=1}^N
+    \tr[(\mathbf{B}_i - \bar{\mathbf{B}})^2] + N
+    \tr[(\mathbf{M} - \bar{\mathbf{B}})^2]
+  \end{align}
+  Therefore the rank-$L$ approximation of $\mathbf{B}_i$ is equivalent to the
+  rank-$L$ approximation of $\bar{\mathbf{B}}$, namely $\bar{\mathbf{B}}_{[L]}$.
+\end{exercise}
+
+\begin{exercise}
+  ($\mathbf{L}_j, j=1,\ldots,M$ are the coordinates of the ``black'' parts of
+  the cursive letter.) As the optimal $\mathbf{A}_j =
+  \mathbf{V}^T\mathbf{L}_j$, we have
+  \begin{align}
+    \sum_{j = 1}^M\min_{\mathbf{A}_j}\|\mathbf{L}_j - \mathbf{V}\mathbf{A}_j\|^2
+    &= \sum_{j = 1}^M\|(\mathbf{I} - \mathbf{VV}^T)\mathbf{L}_j\|^2 \notag \\
+    &= \sum_{j = 1}^M\tr\left[(\mathbf{I} - \mathbf{VV}^T)
+    \mathbf{L}_j\mathbf{L}_j^T (\mathbf{I} - \mathbf{VV}^T)\right] \notag\\
+    &= \sum_{j = 1}^M\tr\left[(\mathbf{I} - \mathbf{VV}^T)
+    \mathbf{L}_j\mathbf{L}_j^T \right] \notag \\
+    &= \sum_{j =
+    1}^M\tr\left[\mathbf{U}_j\mathbf{\Sigma}_j^2\mathbf{U}_j^T\right] -
+    \tr\left[\mathbf{V}^T \left( \sum_{j = 1}^M
+    \mathbf{U}_j\mathbf{\Sigma}_j^2\mathbf{U}_j^T\right) \mathbf{V}\right]
+  \end{align}
+  where $\mathbf{L}_j = \mathbf{U}_j\mathbf{\Sigma}_j\mathbf{V}_j^T$ is the SVD
+  of $\mathbf{L}_j$. Therefore $\mathbf{V}$ corresponds to the 2 largest
+  eigenvectors of $\sum_{j = 1}^M \mathbf{U}_j\mathbf{\Sigma}_j^2\mathbf{U}_j^T$.
+  
+  For the alternative approach,
+  \begin{align}
+    \sum_{j = 1}^M\min_{\mathbf{A}_j}\|\mathbf{L}_j\mathbf{A}_j^T -
+    \mathbf{V}\|^2 &= \sum_{j = 1}^M\|(\mathbf{I} - \mathbf{S}_j)\mathbf{V}\|^2
+    \notag \\
+    &= \sum_{j = 1}^M\tr\left[\mathbf{V}^T (\mathbf{I} - \mathbf{S}_j)
+    (\mathbf{I} - \mathbf{S}_j)^T \mathbf{V}\right] \notag \\
+    &= \sum_{j = 1}^M\tr\left[\mathbf{V}^T (\mathbf{I} - \mathbf{S}_j)
+    \mathbf{V}\right] \notag \\
+    &= 2M - \tr\left[\mathbf{V}^T \left(\sum_{j = 1}^M\mathbf{S}_j\right)
+    \mathbf{V}\right]
+  \end{align}
+  where $\mathbf{S}_j =
+  \mathbf{L}_j(\mathbf{L}_j^T\mathbf{L}_j)^{-1} \mathbf{L}_j^T =
+  \mathbf{U}_j\mathbf{U}_j^T$. Therefore $\mathbf{V}$ corresponds to the 2
+  largest eigenvectors of $\sum_{j = 1}^M \mathbf{U}_j\mathbf{U}_j^T$.
+\end{exercise}
