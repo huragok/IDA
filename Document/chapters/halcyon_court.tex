@@ -1,2 +1,474 @@
 \chapter{Unsupervised Learning}
 \label{ch:14}
+
+\begin{exercise}
+  \begin{align}
+    d_e(z_i, z_{i'}) &= \sum_{l=1}^p(z_{il} - z_{i'l})^2 \notag \\
+    &= \sum_{l=1}^p(z_{il} - z_{i'l})^2 \frac{w_l}{\sum_{j=1}^pw_j}(x_{il} -
+    x_{i'l})^2 \notag\\
+    &= \frac{ \sum_{l=1}^pw_l(x_{il} -
+    x_{i'l})^2}{\sum_{j=1}^pw_j} \notag\\
+    &= d_e^{(w)}(x_i, x_{i'})
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    The log-likelihood of a given record $\mathbf{x}_i$ is
+    \begin{align}
+      l(\theta;\mathbf{x}_i) =
+      -\frac{1}{2}\log|\mathbf{L}| - \frac{p}{2}\log2\pi - 
+      \frac{p}{2}\log\sigma^2 + \log\left[\sum_{k=1}^K\pi_k\exp(\mathbf{x}_i -
+      \bm{\mu}_k)^T(\sigma^2\mathbf{L})^{-1} (\mathbf{x}_i -
+      \bm{\mu}_k)\right],
+    \end{align}
+    and the log-likelihood over the entire data set is simply
+    $l(\theta;\mathbf{X}) = \sum_{i=1}^Nl(\theta;\mathbf{x}_i)$
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    Suppose we enlarge the dataset with latent variable $\mathbf{\Delta}$
+    ($N$-by-$K$) such that $\mathbf{\Delta}_{ik} = 1$ if $\mathbf{x}_i$ is
+    associated with the $k$-th component and 0 otherwise. Each $\mathbf{x}_i$ is
+    associated with exactly one $k$. The the loglikelihood on $\mathbf{x}_i,
+    \mathbf{\Delta}_i$ becomes
+    \begin{align}
+      l(\theta;\mathbf{x}_i, \bm{\delta}_i) & = -\frac{1}{2}\log|\mathbf{L}| -
+      \frac{p}{2}\log2\pi - \frac{p}{2}\log\sigma^2 \notag \\
+      & + \sum_{k=1}^K
+      \mathbf{\Delta}_{ik}\left[\log\pi_k - \frac{1}{2}(\mathbf{x}_i -
+      \bm{\mu}_k)^T(\sigma^2\mathbf{L})^{-1} (\mathbf{x}_i -
+      \bm{\mu}_k)\right]
+    \end{align}
+    therefore
+    \begin{align}
+      l(\theta;\mathbf{X}, \mathbf{\Delta}) = C - \frac{Np}{2}\log\sigma^2 +
+      \sum_{i=1}^N\sum_{k=1}^K\mathbf{\Delta}_{ik}\left[\log\pi_k -
+      \frac{1}{2}(\mathbf{x}_i - \bm{\mu}_k)^T(\sigma^2\mathbf{L})^{-1}
+      (\mathbf{x}_i - \bm{\mu}_k)\right]
+    \end{align}
+    Now we can formulate the EM-algorithm. We replace $\mathbf{\Delta}_{ik}$
+    with responsibility $\gamma_{ik}$. For the maximization step, we evaluate
+    the MLE of $\sigma^2$ and $\mathbf{\mu}_k$. Since
+    \begin{align}
+      \pdv{l(\theta;\mathbf{X}, \mathbf{\Delta})}{\sigma^2} & = -
+      \frac{Np}{2\sigma^2} +
+      \frac{1}{2\sigma^4}\sum_{i=1}^N\sum_{k=1}^K \gamma_{ik}
+      (\mathbf{x}_i - \bm{\mu}_k)^T \mathbf{L}^{-1} (\mathbf{x}_i -
+      \bm{\mu}_k) \\
+      \pdv{l(\theta;\mathbf{X}, \mathbf{\Delta})}{\mathbf{\mu}_k} &=
+      \sum_{i=1}^N \gamma_{ik} (\bm{\mu}_k - \mathbf{x}_i)^T
+      (\sigma^2\mathbf{L})^{-1}
+    \end{align}
+    By setting the partial derivative to 0, the MLE are
+    \begin{align}
+      \hat{\bm{\mu}_k} & =
+      \frac{\sum_{i=1}^N\gamma_{ik}\mathbf{x}_i} {\sum_{i=1}^N\gamma_{ik}} \\
+      \hat{\sigma}^2 &= \frac{1}{Np} \sum_{i=1}^N\sum_{k=1}^K \gamma_{ik}
+      (\mathbf{x}_i - \bm{\mu}_k)^T \mathbf{L}^{-1} (\mathbf{x}_i - \bm{\mu}_k)
+    \end{align}
+    and the MLE for $\pi_k$ are solved by
+    \begin{align}
+      & \max_{\pi_k,l=1,\ldots,K}\sum_{i=1}^N\sum_{k=1}^K\gamma_{ik}\log\pi_k \\
+      & \mbox{s.t. } \sum_{k=1}^{K}\pi_k=1
+    \end{align}
+    therefore $\hat{\pi}_k = \sum_{i=1}^N\gamma_{ik}/N$.
+    
+    For the expectation step, the responsibilites are updated as
+    \begin{align}
+      \hat{\gamma}_{ik} = \frac{\pi_k\phi_k(\mathbf{x}_i)}
+      {\sum_{l=1}^K\pi_l\phi_l(\mathbf{x}_i)}
+    \end{align}
+    where $\phi_k(\cdot)$ is the PDF of $\mathcal{N}(\bm{\mu}_k,
+    \sigma^2\mathbf{L})$.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    Pretty much the same as Ex 13.1. Now we are not dealing with classification
+    so we don't need to treat $\mathbf{x}_i$ with different labels separately.
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  ???
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+  
+\begin{exercise}
+  \begin{align}
+    \sum_{i=1}^N\|\mathbf{x}_i - \bm{\mu}-\mathbf{V}_q\bm{\lambda}_i\| =
+    \|\mathbf{X} - \mathbf{1}_N\bm{\mu}^T - \mathbf{\Lambda}\mathbf{V}_q^T\|_F^2
+  \end{align}
+  which is minimized when $\hat{\mathbf{\Lambda}} = (\mathbf{X} -
+  \mathbf{1}_N\bm{\mu}^T)\mathbf{V}_q$ given $\mathbf{V}_q$ and $\bm{\mu}$.
+  Denote the null space of $\mathbf{V}_q$ is represented by
+  $\tilde{\mathbf{V}}_q$ where $\tilde{\mathbf{V}}_q^T\tilde{\mathbf{V}}_q =
+  \mathbf{I}_{p-q}$. Now (14.50) becomes
+  \begin{align}
+    \min_{\bm{\mu}, \mathbf{V}_q} \|(\mathbf{X} -
+    \mathbf{1}_N\bm{\mu}^T)\tilde{\mathbf{V}}_q\|_F^2
+  \end{align}
+  Taking partial derivative w.r.t $\bm{\mu}$, we can se that given
+  $\mathbf{V}_q$, the optimal $\bm{\mu}$ satisfy
+  \begin{align}
+    \hat{\bm{\mu}} = \bar{\mathbf{x}} + \mathbf{V}_q\mathbf{b}
+  \end{align}
+  therefore $\hat{\bm{\mu}} = \bar{\mathbf{x}}$ is an optimal solution for
+  arbitrary $\mathbf{V}_q$.
+\end{exercise}
+
+\begin{exercise}
+  Since
+  \begin{align}
+    \pdv{\|\mathbf{X}_2-(\mathbf{X}_1\mathbf{R})+\mathbf{1}\bm{\mu}^T\|_F^2}{\bm{\mu}}
+    = 2N\bm{\mu}^T -2 \mathbf{1}^T\mathbf{X}_2
+    ＋2\mathbf{1}^T\mathbf{X}_1\mathbf{R}
+  \end{align}
+  by setting the partial derivative to 0, we have $\hat{\bm{\mu}} =
+  \bar{\mathbf{x}}_2-\mathbf{R}\bar{\mathbf{x}}_1$. Substitute this result into
+  (14.56) we get
+  \begin{align}
+    & \min_{\mathbf{R}}\|\tilde{\mathbf{X}}_2 - \tilde{\mathbf{X}}_1\mathbf{R}\|_F^2
+    \\
+    & \mbox{s.t. } \mathbf{R} \mbox{ is orthogonal.}\notag
+  \end{align}
+  which is a orthogonal procustes problem (wiki). Since 
+  \begin{align}
+    & \min_{\mathbf{R}} \|\tilde{\mathbf{X}}_2 - \tilde{\mathbf{X}}_1\mathbf{R}\|_F^2
+    \Leftrightarrow \max_{\mathbf{R}} 
+    \tr(\tilde{\mathbf{X}}_1^T\tilde{\mathbf{X}}_2\mathbf{R}^T)
+    \Leftrightarrow \max_{\mathbf{R}} 
+    \tr(\mathbf{DV}^T\mathbf{R}^T\mathbf{U})
+  \end{align}
+  which is maximized when $\mathbf{R} = \mathbf{UV}^T$
+\end{exercise}
+
+\begin{exercise}
+  (14.115) should be Procrustes average with scaling
+  \begin{align}
+    \min_{\{\beta_l,\mathbf{R}_l\}_1^L,\mathbf{M}}
+    \sum_{l=1}^L\|\beta_l\mathbf{X}_l\mathbf{R}_l - \mathbf{M}\|_F^2
+  \end{align}
+  This problem can be solved (sub-optimally) with alternating optimization
+  \begin{enumerate}
+    \item Given $\mathbf{M}$, the $L$ pairs of $(\beta_l,\mathbf{R}_l)$ can be
+    solved independently
+    \begin{align}
+      \min_{\beta_l,\mathbf{R}_l} \|\beta_l\mathbf{X}_l\mathbf{R}_l -
+      \mathbf{M}\|_F^2
+    \end{align}
+    \begin{enumerate}
+      \item Given $\mathbf{R}_l$, $\beta_l$ is optimized as
+      \begin{align}
+        \hat{\beta}_l = \frac{\tr(\mathbf{X}_l\mathbf{R}_l\mathbf{M}^T)}
+        {\tr(\mathbf{X}_l\mathbf{X}_l^T)}
+      \end{align}
+      \item Given $\beta_l$, $\mathbf{R}_l$ is optimized (orthogonal procustes
+      problem) as
+      \begin{align}
+        \hat{\mathbf{R}}_l = \mathbf{U}_l\mathbf{V}_l^T
+      \end{align}
+      where $\beta_l\mathbf{X}_l^T\mathbf{M} =
+      \mathbf{U}_l\mathbf{D}_l\mathbf{V}_l^T$ is SVD. However, we note that
+      $\mathbf{U}_l$, $\mathbf{V}_l$ does not actually depend on $\beta_l$.
+      Therefore, we can evaluate $\hat{\mathbf{R}}_l$ with the SVD of 
+      $\mathbf{X}_l^T\mathbf{M}$ and then evaluate $\hat{\beta}_l$.
+    \end{enumerate}
+    \item Given $\beta_l$, $\mathbf{R}_l$, $\mathbf{M}$ is simply optimized as
+    the average
+    \begin{align}
+      \hat{\mathbf{M}} = \frac{1}{L}\sum_{l=1}^L \beta_l\mathbf{X}_l\mathbf{R}_l
+    \end{align}
+  \end{enumerate}
+  The above 2 steps are taken alternatingly until convergence.
+\end{exercise}
+
+\begin{exercise}
+  Given $\mathbf{M}$, $\mathbf{A}_l$ are optimized as $\hat{\mathbf{A}}_l =
+  (\mathbf{X}_l^T\mathbf{X}_l)^{-1}\mathbf{X}_l^T\mathbf{M}$. Consequently,
+  (14.60) is equivalent to
+  \begin{align}
+    \min_{\mathbf{M}} \sum_{l=1}^L \|(\mathbf{I} - \mathbf{H}_l)\mathbf{M}\|_F^2
+  \end{align}
+  s.t. $\mathbf{M}\mathbf{M}^T = \mathbf{I}$, where $\mathbf{H}_l =
+  \mathbf{X}_l(\mathbf{X}_l^T\mathbf{X}_l)^{-1}\mathbf{X}_l^T$. This in ture is
+  equivalent to
+  \begin{align}
+    \max_{\mathbf{M}} \sum_{l=1}^L \tr(\mathbf{M}^T\mathbf{H}_l\mathbf{M})
+  \end{align}
+  s.t. $\mathbf{M}\mathbf{M}^T = \mathbf{I}$. As a result, $\hat{\mathbf{M}}$ is
+  the $p$ largest eigen vectors of $ \sum_{l=1}^L\mathbf{H}_l$.
+\end{exercise}
+
+\begin{exercise}
+  ???
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    \begin{align}
+      & \sum_{i=1}^N \|\mathbf{x}_i - \mathbf{\Theta V}^T\mathbf{x}_i\|^2 \notag
+      \\
+      = & \|\mathbf{X}(\mathbf{I} - \mathbf{V\Theta}^T)\|_F^2 \notag \\
+      = & \tr[\mathbf{X}(\mathbf{\Theta} - \mathbf{V})(\mathbf{\Theta} -
+      \mathbf{V})^T\mathbf{X}^T] + \tr[\mathbf{X}\mathbf{X}^T -
+      \mathbf{X}\mathbf{\Theta}\mathbf{\Theta}^T\mathbf{X}]
+    \end{align}
+    where the second term is not dependent on $\mathbf{V}$ and the first term
+    equals to $\sum_{i=1}^N\|\mathbf{\Theta}^T\mathbf{x}_i -
+    \mathbf{V}^T\mathbf{x}_i\|$. Consequently, the minimization of (14.71)
+    w.r.t $\mathbf{V}$ becomes
+    \begin{align}
+      \min_{\{\mathbf{v}_k\}_{k=1}^K}\sum_{k=1}^K
+      \left[ \sum_{i=1}^N \|\bm{\theta}_k^T\mathbf{x}_i -
+      \mathbf{v}_k^T\mathbf{x}_i\|_2^2 + \lambda\|\mathbf{v}_k\|_2^2 +
+      \lambda_{1k}\|\mathbf{v}_k\|_1\right]
+    \end{align}
+    which can be solved as $K$ separate elastic net regression problems.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    We rewrite
+    \begin{align}
+      & \|\mathbf{X}(\mathbf{I} - \mathbf{V\Theta}^T)\|_F^2 \notag \\
+      = & \tr[\mathbf{X}\mathbf{X}^T - \mathbf{XVV}^T\mathbf{X}^T] -
+      2\tr[\mathbf{\Theta}^T\mathbf{X}^T\mathbf{XV}]
+    \end{align}
+    Since the rest part of (14.71) is not dependent on $\mathbf{\Theta}$, the
+    minimization of (14.71) w.r.t $\mathbf{\Theta}$ is equivalent to
+    \begin{align}
+      & \max_{\mathbf{\Theta}} \tr(\mathbf{\Theta}^T\mathbf{M}) \\
+      & \mbox{s.t. } \mathbf{\Theta}^T\mathbf{\Theta} = \mathbf{I} \notag
+    \end{align}
+    where $\mathbf{M} = \mathbf{X}^T\mathbf{XV}$. This has the same form as the
+    Procrustes problem in Ex 14.8, therefore its solution is $\mathbf{\Theta} =
+    \mathbf{U}\mathbf{Q}^T$.
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}
+  Denote $\mathbf{D}_A=\mbox{diag}(\{\mathbf{a}_j^T\mathbf{a}_j\}_{j=1}^p)$,
+  then
+  \begin{align}
+    \mathbf{P} = \mathbf{D}_A^{-1/2} \mathbf{\Sigma} \mathbf{D}_A^{-1/2} =
+    \mathbf{P}_A + \mathbf{D}_A^{-1}\mathbf{D}_{\epsilon}
+  \end{align}
+  where $\mathbf{P}_A $ is the correlation matrix
+  \begin{align}
+    \{\mathbf{P}_A\}_{ij} = \frac{\mathbf{a}_i^T\mathbf{a}_j}
+    {\|\mathbf{a}_i\|\|\mathbf{a}_j\|}
+  \end{align}
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}
+  Since $\mathbf{Z} = \tilde{\mathbf{K}}\mathbf{UD}^{-1}$, therefore
+  \begin{align}
+    z_{im} = \sum_{j=1}^N\tilde{K}(x_i, x_j)u_{jm}d_m^{-1}
+  \end{align}
+  where $\tilde{K}(x_i, x_j)$ differs from $K(x_i, x_j)$ only in centering. For
+  a new observation $x_0$, its mapping to the $m$-th component is 
+  \begin{align}
+    \langle\tilde{\phi}(x_0), \sum_{j = 1}^N\alpha_{jm}\tilde{\phi}(x_j)\rangle =
+    \sum_{j = 1}^N\alpha_{jm}\langle\tilde{\phi}(x_0), \tilde{\phi}(x_j)\rangle
+    = \sum_{j=1}^N \alpha_{jm} \tilde{K}(x_0, x_j)
+  \end{align}
+  which differs from $\sum_{j=1}^N \alpha_{jm} K(x_0, x_j)$ only in centering.
+  
+\end{exercise}
+
+\begin{exercise}
+  Denote $\mathbf{c} = [c_1,\ldots,c_N]^T$. First we note
+  \begin{align}
+    \|g_1(x)\|_{\mathcal{H}_K} = \sum_{i=1}^N \sum_{j=1}^N c_ic_j
+    K(x_i, x_j) = \mathbf{c}^T\mathbf{K}\mathbf{c}
+  \end{align}
+  
+  Secondly, we have
+  \begin{align}
+    \mbox{Var}_{\mathcal{T}}g_1(X) & = \frac{1}{N}\sum_{k=1}^N g_1(x_k)^2 \notag
+    \\
+    &= \frac{1}{N} \sum_{k=1}^N \sum_{i=1}^N \sum_{j=1}^N c_ic_jK(x_k,
+    x_i)K(x_k, x_j) \notag \\
+    &= \frac{1}{N} \mathbf{c}^T\mathbf{KK}\mathbf{c}
+  \end{align}
+  Since $\mathbf{K} = \mathbf{UD}^2\mathbf{U}^T$, (14.66) can be rewritten as
+  \begin{align}
+    & \max \mathbf{c}^T\mathbf{UD}^4\mathbf{U}^T\mathbf{c} \\
+    & \mbox{s.t. } \mathbf{c}^T\mathbf{UD}^2\mathbf{U}^T\mathbf{c} = 1 \notag
+  \end{align}
+  Denote $\mathbf{a} = \mathbf{D}\mathbf{U}^T\mathbf{c}$, then the optimal
+  solution must satisfy $\hat{\mathbf{a}} = [1,0,\ldots,0]^T$, therefore
+  $\hat{c} = \mathbf{u}_1/d_1$. $g_2,\ldots,g_M$ can be derived in a similar
+  manner.
+\end{exercise}
+
+\begin{exercise}
+  Consider the stationary condition on $\theta_0$, we have
+  \begin{align}
+    \pdv{l}{\theta_0} = 1 - \int\phi(t)\exp(\theta_0 + \theta_1t +
+    \theta_2t^2)dt = 0
+  \end{align}
+  also since $\phi(t)\exp(\theta_0 + \theta_1t + \theta_2t^2) > 0$, it is a
+  probability density function.
+  
+  Consider the stationary condition on $\theta_1$, we have
+  \begin{align}
+    \pdv{l}{\theta_1} = \frac{1}{N}\sum_{i=1}^Ns_i - \int t\phi(t)\exp(\theta_0
+    + \theta_1t + \theta_2t^2)dt = 0
+  \end{align}
+  since $\sum_{i=1}^Ns_i=0$, this condition suggest that $\phi(t)\exp(\theta_0 +
+  \theta_1t + \theta_2t^2)$ has zero mean.
+  
+  Consider the stationary condition on $\theta_2$, we have
+  \begin{align}
+    \pdv{l}{\theta_2} = \frac{1}{N}\sum_{i=1}^Ns_i^2 - \int
+    t^2\phi(t)\exp(\theta_0 + \theta_1t + \theta_2t^2)dt = 0
+  \end{align}
+  since $\sum_{i=1}^Ns_i^2 / N=1$, this condition suggest that
+  $\phi(t)\exp(\theta_0 + \theta_1t + \theta_2t^2)$ has unit variance.
+  
+  (???)
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \sum_{j=1}^p\sum_{i=1}^N \log\phi(\mathbf{a}_j^T\mathbf{x}_i) =
+    -\frac{pN}{2}\log 2\pi - \frac{1}{2}\|\mathbf{AX}\|_F^2.
+  \end{align}
+  Since $\|\mathbf{AX}\|_F^2 = \|\mathbf{X}\|_F^2$ for any orthogonal
+  $\mathbf{A}$, this term does not depend on $\mathbf{A}$.
+\end{exercise}
+
+\begin{exercise}
+  Since
+  \begin{align}
+    \pdv{g}{a} &= \mathbb{E}[Xg'(a^TX)]  \\
+    \pdv{g}{a}{a^T} &= \mathbb{E}[XX^Tg''(a^TX)]\approx
+    \mathbb{E}[g''(a^TX)]I
+  \end{align}
+  the Newton update is
+  \begin{align}
+    a \leftarrow a - (\mathbb{E}[g''(a^TX)])^{-1}\mathbb{E}[Xg'(a^TX)]
+  \end{align}
+  Since $a$ needs to be normalized to ensure $\|a\|=1$ anyway, the right hand
+  side of the above equation can be multiplied with a positive constant
+  $-\mathbb{E}[g''(a^TX)]$ (followed by a normalization), resulting in
+  \begin{align}
+    a \leftarrow \mathbb{E}[Xg'(a^TX)] - \mathbb{E}[g''(a^TX)]a
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  Since there are $m$ connected components in the graph, $\mathbf{L}$ can be
+  transformed into a block-diagonal matrix
+  \begin{align}
+    \mathbf{L} = \mbox{diag}(\mathbf{L}_1,\ldots, \mathbf{L}_m)
+  \end{align}
+  where $\mathbf{L}_j = \mathbf{G}_j - \mathbf{W}_j $. Since
+  $\mathbf{L}_m\mathbf{1} = \mathbf{0}$, $\mathbf{L}$ has $m$ eigenvectors
+  corresponding to eigenvalue of 0, which are the same as the permutated
+  indicator vectors $I_{A_1},\ldots, I_{A_m}$.
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    \begin{align}
+      \mathbf{1}^T\mathbf{p} & = (1 - d)\mathbf{1}^T\mathbf{e} +
+      d\mathbf{1}^T\mathbf{L}\mathbf{D}_c^{-1}\mathbf{p} \notag \\
+      &= (1 - d)N + d\mathbf{c}^T\mathbf{D}_c^{-1}\mathbf{p} \notag \\
+      &= (1 - d)N + d\mathbf{1}^T\mathbf{p}
+    \end{align}
+    therefore $\mathbf{1}^T\mathbf{p} = N$.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}(Program)
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    Since $\log(\cdot)$ is concave, according to Jensen's inequality
+    \begin{align}
+      \sum_{k=1}^r c_k\log(y_k/c_k) & = \frac{1}{\sum_{k=1}^rc_k}
+      \sum_{k=1}^rc_k\log(y_k/c_k) \notag \\
+      & \leq\log(\frac{\sum_{k=1}^ry_k}{\sum_{k=1}^rc_k}) \notag\\
+      &= \log(\sum_{k=1}^ry_k)
+    \end{align}
+    where equality holds iff $c_k = 1 / r$.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    \begin{align}
+      g(\mathbf{W},\mathbf{H}|\mathbf{W}^s,\mathbf{H}^s) = \sum_{i=1}^N
+      \sum_{j=1}^p \sum_{k=1}^r x_{ij}\frac{a_{ikj}^s}{b_{ij}^s}
+      \log(\frac{b_{ij}^s}{a_{ikj}^s} w_{ik}h_{kj}) - \sum_{i=1}^N
+      \sum_{j=1}^p \sum_{k=1}^r w_{ik}h_{kj}
+    \end{align}
+    minorizes $L(\mathbf{W},\mathbf{H})$
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    The stationary conditions are
+    \begin{align}
+      \pdv{g}{w_{ik}} &= \sum_{j=1}^p \frac{x_{ij}}{w_{ik}}
+      \frac{a_{ikj}^s}{b_{ij}^s} - \sum_{j=1}^p h_{kj} = 0 \\
+      \pdv{g}{h_{kj}} &= \sum_{i=1}^N \frac{x_{ij}}{h_{kj}}
+      \frac{a_{ikj}^s}{b_{ij}^s} - \sum_{i=1}^N w_{ik} = 0
+    \end{align}
+    which are equivalent to
+    \begin{align}
+      w_{ik} &= \frac{\sum_{j=1}^px_{ij}a_{ikj}^s/b_{ij}^s} {\sum_{j=1}^p
+      h_{kj}} \\
+      h_{kj} &= \frac{\sum_{i=1}^Nx_{ij}a_{ikj}^s/b_{ij}^s} {\sum_{i=1}^N
+      w_{ik}}
+    \end{align}
+    which are exactly the updating steps (14.74).
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    When $r = 1$, we have $a_{ikj}^s/b_{ij}^s = 1$, therefore the updating steps
+    are simplified as
+    \begin{align}
+      w_i \leftarrow \frac{\sum_{j=1}^px_{ij}}{\sum_{j=1}^ph_j}, \; h_j
+      \leftarrow \frac{\sum_{i=1}^Nx_{ij}}{\sum_{i=1}^Nw_i}
+      \label{eq:ch_14_24_1_update}
+    \end{align}
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    From Eq.~\eqref{eq:ch_14_24_1_update}, for every two
+    steps, the updating becomes
+    \begin{align}
+      h_k & \leftarrow \frac{\sum_{i=1}^Nx_{ik}}{\sum_{i=1}^Nw_i} \leftarrow
+      \frac{\sum_{i=1}^Nx_{ik}} {\sum_{i=1}^N\sum_{j=1}^px_{ij}}
+      \sum_{j=1}^ph_j \\
+      w_l & \leftarrow \frac{\sum_{j=1}^px_{lj}}{\sum_{j=1}^ph_j} \leftarrow
+      \frac{\sum_{j=1}^px_{lj}} {\sum_{i=1}^N\sum_{j=1}^px_{ij}}
+      \sum_{i=1}^Nw_i
+    \end{align}
+    It is easy to see that throughout the updating, $\sum_{j=1}^ph_j$ and
+    $\sum_{i=1}^Nw_i$ remains constant, thus $h_k$ and $w_l$ remanis constant.
+    Consequently, the iteration is completely stationary.By enforcing
+    $\sum_{j=1}^ph_j \sum_{i=1}^Nw_i = 1$, the iteration has the explicit form
+    as (14.122) for any $c$.
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
