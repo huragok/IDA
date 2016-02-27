@@ -1,2 +1,185 @@
 \chapter{Random Forests}
 \label{ch:15}
+
+\begin{exercise}
+  Assuming $X_b$, $b = 1,\ldots, B$ are i.d with mean $\bar{x}$
+  and variance $\sigma^2$. An average of these B variables are
+  \begin{align}
+    X_B = \frac{1}{B}\sum_{b=1}^B X_b
+  \end{align}
+  therefore
+  \begin{align}
+    \mathbb{E}[X_B] & = \bar{x} \\
+    \mathbb{E}[X_B^2] & = \frac{1}{B^2}\mathbb{E}\left[\sum_{b=1}^BX_b^2 +
+    \sum_{b=1}^B\sum_{c\not=b}X_bX_c \right] \notag \\
+    &= \frac{1}{B}[\sigma^2 + \bar{x}^2] + \frac{B-1}{B}[\rho\sigma^2 +
+    \bar{x}^2]
+  \end{align}
+  Therefore
+  \begin{align}
+    \mbox{var}(X_B) & = \mathbb{E}[X_B^2] - \mathbb{E}[X_B]^2 \notag\\
+    & = \rho\sigma^2 + \frac{1 - \rho}{B}\sigma^2
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  The $N$-fold CV error estimate
+  \begin{align}
+    \frac{1}{N}\sum_{i=1}^NL(y_i,\hat{f}^{-i}(x_i))
+  \end{align}
+  where $\hat{f}^{-i}()$ denotes the model trained without using $(y_i,
+  x_i)$. On the other hand,  the OOB error estimate is
+  \begin{align}
+    \frac{1}{N}\sum_{i=1}^NL(y_i,
+    \frac{1}{\tilde{B}_i}\sum_{b\in\mathcal{\tilde{B}}_i}\tilde{f}_b(x_i))
+  \end{align}
+  where $\tilde{B}_i = |\mathcal{\tilde{B}}_i|$ and $\mathcal{\tilde{B}}_i$
+  represent the bootstrap sample sets that does not include $(y_i,
+  x_i)$, and $\tilde{f}_b$ denotes the model trained using the $b$-th bootstrap
+  sample set.
+  
+  When $B\rightarrow\infty$, each $\tilde{B}_i\rightarrow\infty$, the OOB
+  prediction
+  $1/\tilde{B}_i\sum_{b\in\mathcal{\tilde{B}}_i}\tilde{f}_b(x_i)$ is
+  just the non-parametric bootstrap version of $\hat{f}^{-i}(x_i)$ that is
+  consistent (under some conditions).
+  Therefore the OOB error estimate is asymptotically the same as the $N$-fold CV
+  error estimate.
+\end{exercise}
+
+\begin{exercise}
+  (Note: $\sum_{j=1}^JX_j$ follows Irwin-Hall distribution, a spline of degree
+  of $J-1$ over knots $0,1,\ldots,J$).
+  
+  The probability is a function defined over a $J$ dimensional unit-cube in the
+  $J$ dimensional space $\{x_1, x_2,\ldots,x_J\}$ separated by the plane
+  $\sum_{j=1}^Jx_j = J / 2$. On one side of the plane the probability
+  $Pr(Y=1|X=x) = q$ and on the other side $Pr(Y=1|X=x) = 1 - q$.
+  
+  Consequently, the Bayesian error rate os
+  \begin{align}
+    P_E & = P\left(\sum_{j=1}^JX_j > J/2\right)P(Y = 0|X) +
+    P\left(\sum_{j=1}^JX_j < J/2\right)P(Y = 1|X) \notag\\
+    & = \frac{1}{2}q + \frac{1}{2}q = q
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \bar{x}_1^*  = \frac{1}{N}\sum_{i=1}^Nx_{s_i},\;  \bar{x}_2^* =
+    \frac{1}{N}\sum_{i=1}^Nx_{r_i}
+  \end{align}
+  where $s_i$ and $r_i$ are i.i.d uniformly distributed over $\{1,\ldots,N\}$.
+  Therefore we have
+  \begin{align}
+    \mathbb{E}[\bar{x}_1^*] & = \mu \\
+    \mbox{var}(\bar{x}_1^*) & = \mathbb{E}\left[(\bar{x}_1^*)^2\right] -
+    \mathbb{E}[\bar{x}_1^*]^2 \notag \\
+    &= \frac{1}{N^2}\sum_{i=1}^N\mathbb{E}[x_{s_i}^2] +
+    \frac{1}{N^2} \sum_{i=1}^N \sum_{j\not=i}\mathbb{E}[x_{s_i}x_{s_j}] - \mu^2
+  \end{align}
+  Since
+  \begin{align}
+    \mathbb{E}[x_{s_i}x_{s_j}] = P(s_i = s_j)\mathbb{E}[x_{s_i}x_{s_j}] + P(s_i \not=
+    s_j)\mathbb{E}[x_{s_i}x_{s_j}] = \frac{1}{N}(\mu^2 + \sigma^2) +
+    \frac{N-1}{N}\mu^2
+  \end{align}
+  we have
+  \begin{align}
+    \mbox{var}(\bar{x}_1^*) = \mbox{var}(\bar{x}_2^*) =
+    \frac{2N-1}{N^2}\sigma^2.
+  \end{align}
+  On the other hand, we have
+  \begin{align}
+    \mbox{cov}(\bar{x}_1^*, \bar{x}_2^*) &=
+    \mathbb{E}\left[\bar{x}_1^*\bar{x}_2^*\right] -
+    \mathbb{E}[\bar{x}_1^*]\mathbb{E}[\bar{x}_2^*] \notag \\
+    &= \frac{1}{N^2}\sum_{i=1}^N \sum_{j=1}^N \mathbb{E}[x_{s_i}x_{r_j}] - \mu^2
+    \notag\\
+    &= \frac{1}{N}(\mu^2 + \sigma^2) + \frac{N-1}{N}\mu^2 - \mu^2 \notag \\
+    &= \frac{\sigma^2}{N}
+  \end{align}
+  Consequently,
+  \begin{align}
+    \mbox{corr}(\bar{x}_1^*, \bar{x}_2^*) = \frac{\mbox{cov}(\bar{x}_1^*,
+    \bar{x}_2^*)}{\sqrt{\mbox{var}(\bar{x}_1^*)\mbox{var}(\bar{x}_2^*)}} =
+    \frac{N}{2N-1}
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    & \mbox{var}_{\Theta,\mathbf{Z}}(T(X;\Theta(\mathbf{Z}))) \notag\\
+    =&
+    \mathbb{E}_{\mathbf{Z}}\left[\mathbb{E}_{\Theta|\mathbf{Z}}
+    \left[T(X;\Theta(\mathbf{Z}))^2 \right] \right] -
+    \mathbb{E}_{\mathbf{Z}}\left[\mathbb{E}_{\Theta|\mathbf{Z}}
+    \left[T(X;\Theta(\mathbf{Z})) \right] \right]^2 \notag \\
+    =& \mathbb{E}_{\mathbf{Z}}\left[\mbox{var}_{\Theta|\mathbf{Z}} \left(
+    T(X;\Theta(\mathbf{Z}))\right) + 
+    \mathbb{E}_{\Theta|\mathbf{Z}}\left[T(X;\Theta(\mathbf{Z})\right]^2 \right]
+    - \mathbb{E}_{\mathbf{Z}}\left[\mathbb{E}_{\Theta|\mathbf{Z}}
+    \left[T(X;\Theta(\mathbf{Z})) \right] \right]^2 \notag \\
+    = & \mathbb{E}_{\mathbf{Z}}\left[\mbox{var}_{\Theta|\mathbf{Z}} \left(
+    T(X;\Theta(\mathbf{Z}))\right)\right] + \mathbb{E}_{\mathbf{Z}}\left[
+    \mathbb{E}_{\Theta|\mathbf{Z}}\left[T(X;\Theta(\mathbf{Z})\right]^2\right] -
+    \mathbb{E}_{\mathbf{Z}}\left[ \mathbb{E}_{\Theta|\mathbf{Z}}
+    \left[T(X;\Theta(\mathbf{Z})) \right] \right]^2 \notag \\
+    = & \mathbb{E}_{\mathbf{Z}}\left[\mbox{var}_{\Theta|\mathbf{Z}} \left(
+    T(X;\Theta(\mathbf{Z}))\right)\right] + \mbox{var}_{\mathbf{Z}}
+    \left(\mathbb{E}_{\Theta|\mathbf{Z}}\left[T(X;\Theta(\mathbf{Z}))\right]
+    \right)
+  \end{align}
+  On the other hand,
+  \begin{align}
+    & \mbox{cov}_{\Theta,\mathbf{Z}}\left(T_1(X;\Theta(\mathbf{Z})),
+    T_2(X;\Theta(\mathbf{Z}))\right) \notag\\
+    = & \mathbb{E}_{\Theta, \mathbf{Z}}\left[
+    T_1(X;\Theta(\mathbf{Z}))T_2(X;\Theta(\mathbf{Z})) \right] -
+    \mathbb{E}_{\Theta, \mathbf{Z}} \left[
+    T_1(X;\Theta(\mathbf{Z})) \right] \mathbb{E}_{\Theta, \mathbf{Z}} \left[
+    T_2(X;\Theta(\mathbf{Z})) \right] \notag \\
+    = & \mathbb{E}_{\mathbf{Z}}\left[\mathbb{E}_{\Theta|\mathbf{Z}}
+    \left[T_1(X;\Theta(\mathbf{Z}))T_2(X;\Theta(\mathbf{Z}))\right] \right] -
+    \mathbb{E}_{\mathbf{Z}} \left[ \mathbb{E}_{\Theta|\mathbf{Z}}
+    \left[T(X;\Theta(\mathbf{Z})) \right] \right]^2
+  \end{align}
+  Since $T_1$ and $T_2$ conditioned on $\mathbf{Z}$ are independent w.r.t
+  $\Theta$, we have
+  \begin{align}
+    & \mbox{cov}_{\Theta,\mathbf{Z}}\left(T_1(X;\Theta(\mathbf{Z})),
+    T_2(X;\Theta(\mathbf{Z}))\right) \notag\\
+    = & \mathbb{E}_{\mathbf{Z}}\left[\mathbb{E}_{\Theta|\mathbf{Z}}
+    \left[T(X;\Theta(\mathbf{Z}))\right]^2 \right] - \mathbb{E}_{\mathbf{Z}}
+    \left[ \mathbb{E}_{\Theta|\mathbf{Z}} \left[T(X;\Theta(\mathbf{Z})) \right]
+    \right]^2 \notag \\
+    = & \mbox{var}_{\mathbf{Z}}
+    \left(\mathbb{E}_{\Theta|\mathbf{Z}}\left[T(X;\Theta(\mathbf{Z}))\right]
+    \right)
+  \end{align}
+  Consequently (15.12) is proved.
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    RSS = \frac{1}{N}\|\mathbf{y} - \mathbf{X}\hat{\bm{\beta}}\|^2
+  \end{align}
+  On the other hand,
+  \begin{align}
+    RSS_j^* = \frac{1}{N}\|\mathbf{y} - \mathbf{X}\hat{\bm{\beta}} +
+    \hat{\beta}_j(\mathbf{x}_j - \mathbf{x}_j^*)\|^2
+  \end{align}
+  where $\mathbf{x}_j$ represents the $j$-th column of $\mathbf{X}$ and $\mathbf{x}_j^*$
+  represents its permutated version. Consequently,
+  \begin{align}
+    \mathbb{E}[RSS_j^*] &= RSS +
+    \frac{1}{N}\mathbb{E}[\|\hat{\beta}_j(\mathbf{x}_j - \mathbf{x}_j^*)\|^2] \notag \\
+    &= RSS + \frac{2}{N}\mathbb{E}[\|\hat{\beta}_j\mathbf{x}_j\|^2] \notag \\
+    &= RSS + 2\|\hat{\beta}_j\|^2
+  \end{align}
+  assuming that the $j$-th column of $\mathbf{X}$ has been standardized so that
+  $\mathbb{E}\|\mathbf{x}_j\|/N = 1$.
+\end{exercise}
