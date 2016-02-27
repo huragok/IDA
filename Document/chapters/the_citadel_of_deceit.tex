@@ -1,2 +1,64 @@
 \chapter{Ensemble Learning}
 \label{ch:16}
+
+\begin{exercise}
+  For each block of 20, generate independent samples
+  $v_{0,i},v_{1,i},\ldots,v_{20,i} \sim\mathcal{N}(0, 1)$. Then generate the
+  $i$-th sample of the 20 variables as $x_{1,i}=\sqrt{0.95}v_{0,i} +
+  \sqrt{0.05}v_{1,i},\ldots, x_{20,i}=\sqrt{0.95}v_{0,i} + \sqrt{0.05}v_{20,i}$.
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \Lambda(t) &= \int_0^t|\dot{\alpha}(t)|_1dt \notag \\
+    & \geq |\int_0^t\dot{\alpha}(t)dt|_1 \notag \\
+    & = |\alpha(t)|_1
+  \end{align}
+  Equality holds iff $\dot{\alpha}(t)\geq 0, \forall t$, or $\dot{\alpha}(t)\leq
+  0, \forall t$, i.e. $\alpha(t)$ is monotonic.
+\end{exercise}
+
+\begin{exercise}
+  The regressio problem is
+  \begin{align}
+    \min\sum_{i=1}^N \left[y_i - \beta_1I_1(x_i) - \beta_4I_4(x_i)  -
+    \beta_6I_6(x_i) - \beta_7I_7(x_i)\right]^2
+  \end{align}
+  Since $R_1, R_4, R_6, R_7$ is a partitial of the sample space $\mathcal{X}$,
+  the above problem can be rewritten as 
+  \begin{align}
+    & \min \sum_{x_i\in R_1}[y_i - \beta_1]^2 + \sum_{x_i\in R_4}[y_i -
+    \beta_4]^2 + \sum_{x_i\in R_6}[y_i - \beta_7]^2 + \sum_{x_i\in
+    R_7}[y_i - \beta_7]^2 \notag \\
+    \leftrightarrow & \min \sum_{x_i\in R_1}[y_i - \beta_1]^2 + \min
+    \sum_{x_i\in R_4}[y_i - \beta_4]^2 + \min \sum_{x_i\in R_6}[y_i - \beta_7]^2
+    + \min \sum_{x_i\in R_7}[y_i - \beta_7]^2
+  \end{align}
+  i.e. can be decomposed into 4 independent regression problems, of which the
+  solutions are $\hat{\beta}_1 = \mbox{mean}{y_i|x_i\in R_1}$, $\hat{\beta}_4 =
+  \mbox{mean}{y_i|x_i\in R_4}$, $\hat{\beta}_6 = \mbox{mean}{y_i|x_i\in R_6}$
+  and $\hat{\beta}_7 = \mbox{mean}{y_i|x_i\in R_7}$, which are exactly the same
+  as a regression tree.
+  
+  The 2-class logistic regression problem can be formulated as follows, by
+  encoding $y_i \in\{0, 1\}$,
+  \begin{align}
+    \max\sum_{i=1}^Ny_i\bm{\beta}^T\mathbf{I}(x_i) -
+    \log(1+\exp(\bm{\beta}^T\mathbf{I}(x_i)))
+  \end{align}
+  where $\bm{\beta} = [\beta_1, \beta_4, \beta_6, \beta_7]^T$, $\mathbf{I}(x_i)
+  = [I_1(x_i), I_4(x_i), I_6(x_i), I_7(x_i)]^T$. Again this problem can be
+  decomposed into
+  \begin{align}
+    & \max \sum_{x_i\in R_1}y_i\beta_1x_i - \log(1+\exp(\beta_1x_i)) + 
+    \max \sum_{x_i\in R_4}y_i\beta_4x_i - \log(1+\exp(\beta_4x_i)) \notag \\ + &
+    \max \sum_{x_i\in R_6}y_i\beta_6x_i - \log(1+\exp(\beta_6x_i)) + 
+    \max \sum_{x_i\in R_7}y_i\beta_7x_i - \log(1+\exp(\beta_7x_i))
+  \end{align}
+  of which the solution is
+  \begin{align}
+    \frac{\exp(\beta_j)}{1+\exp(\beta_j)} = \frac{\sum_{x_i\in R_j}
+    y_i}{\sum_{x_i\in R_j} 1}
+  \end{align}
+  where $j = 1, 4, 6, 7$. This result is equivalent to a classification tree.
+\end{exercise}
