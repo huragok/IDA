@@ -1,2 +1,491 @@
 \chapter{High-Dimensional Problems}
 \label{ch:18}
+
+\begin{exercise}
+  ???
+\end{exercise}
+
+\begin{exercise}
+  To minimize the lasso-style objective function (denoted as $L$), we have
+  \begin{subequations}
+    \begin{align}
+      \pdv{L}{\mu_j} & = \sum_{k=1}^K\sum_{i\in C_k}-\frac{x_{ij}- \mu_j -
+      \mu_{jk}} {s_j^2} = 0 \\
+      \pdv{L}{\mu_{jk}} & = \sum_{i\in C_k} -\frac{x_{ij}- \mu_j - \mu_{jk}}
+      {s_j^2} + \lambda\sqrt{N_k}\frac{\mbox{sign}(\mu_{jk})}{s_j} = 0
+    \end{align}
+  \end{subequations}
+  therefore
+  \begin{subequations}
+    \begin{align}
+      \mu_{jk} & = \bar{x}_{jk} - \mu_j -
+      \frac{\lambda s_j \mbox{sign}(\mu_{jk})}{\sqrt{N_k}} \\
+      \mu_j &= \bar{x}_j - \frac{1}{N}\sum_{k=1}^KN_k\mu_{jk}
+    \end{align}
+  \end{subequations}
+  wher $\bar{x}_{jk} = \sum_{i\in C_k}x_{ij} / N_k$ and $\bar{x}_j =
+  \sum_{i=1}^Nx_{ij} / N$. (Here we note that the condition
+  $\sum_{k=1}^K\mu_{jk}$ should have been $\sum_{k=1}^KN_k\mu_{jk} = 0$.)
+  Consequently
+  \begin{align}
+    \mu_{jk} = \bar{x}_{jk}- \bar{x}_j - \frac{\lambda s_j
+    \mbox{sign}(\mu_{jk})}{\sqrt{N_k}},
+  \end{align}
+  therefore
+  \begin{align}
+    d_{kj}' &= \frac{\sqrt{N_k}\mu_{jk}}{s_j} \notag \\
+    &= \frac{\bar{x}_{jk}- \bar{x}_j}{m_k(s_j + s_0)} -
+    \lambda\mbox{sign}(d_{kj}') \notag \\
+    &= d_{kj} - \lambda\mbox{sign}(d_{kj}')
+  \end{align}
+  where $s_0 = 0$ and $m_k = 1 /\sqrt{N_k}$. As a result, we have $d_{kj}' =
+  \mbox{sign}(d_{kj})(|d_{kj} - \Delta|)_+$, where $\Delta = \lambda$.
+\end{exercise}
+
+\begin{exercise}
+  The penalized log-likelihood objective function in (18.11) is explicitly
+  written as
+  \begin{align}
+    l_P(\bm{\beta}_0, \mathbf{B}; \mathbf{X}, \mathbf{g}) &= \sum_{i=1}^N 
+    \left[\beta_{k_i0} + \mathbf{x}_i^T\bm{\beta}_{k_i} - \log \sum_{l=1}^K 
+    \exp(\beta_{l0} + \mathbf{x}_i^T\bm{\beta}_l) \right] - \frac{\lambda}{2}
+    \sum_{k=1}^K\|\bm{\beta}_k\|^2
+  \end{align}
+  The necessary condition to maximize the penalized log-likelihood is
+  \begin{align}
+    \pdv{l_P(\bm{\beta}_0, \mathbf{B}; \mathbf{X}, \mathbf{g})}{\bm{\beta}_k} &=
+    \sum_{i:g_i=k}\mathbf{x}_i^T - \sum_{i=1}^N\mbox{Pr}(k|\mathbf{x}_i)
+    \mathbf{x}_i^T - \lambda\bm{\beta}_k^T = \mathbf{0}
+  \end{align}
+  for $k=1,\ldots,K$. Consequently,
+  \begin{align}
+    \sum_{k=1}^K  \pdv{l_P(\bm{\beta}_0, \mathbf{B}; \mathbf{X},
+    \mathbf{g})}{\bm{\beta}_k} &= \mathbf{0} \notag \\
+    &= \sum_{i=1}^N\mathbf{x}_i^T - \sum_{i=1}^N \left(\sum_{k=1}^K
+    \mbox{Pr}(k|\mathbf{x}_i)\right)\mathbf{x}_i^T - \lambda
+    \sum_{k=1}^K\bm{\beta}_k^T \notag \\
+    &=  - \lambda \sum_{k=1}^K\bm{\beta}_k^T
+  \end{align}
+  therefore $\sum_{k=1}^K\beta_{kj} = 0$, $j=1,\ldots,p$. $\beta_{k0}$ should
+  all be set to 0.
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \hat{\bm{\beta}} &= (\mathbf{X}^T\mathbf{X} + \lambda \mathbf{I})^{-1}
+    \mathbf{X}^T \mathbf{y} \notag \\
+    &= (\mathbf{VR}^T\mathbf{RV}^T + \lambda \mathbf{I})^{-1}\mathbf{VR}^T
+    \mathbf{y} \notag \\
+    &= \left[\lambda^{-1}\mathbf{I} - \lambda^{-1}\mathbf{V}
+    \left((\mathbf{R}^T\mathbf{R})^{-1} + \lambda^{-1}\mathbf{I}
+    \right)^{-1}\mathbf{V}^T \lambda^{-1}\right] \mathbf{VR}^T\mathbf{y}
+    \notag\\
+    & = \lambda^{-1}\mathbf{V} \left[\mathbf{I} - \lambda^{-1}
+    \left((\mathbf{R}^T\mathbf{R})^{-1} + \lambda^{-1}\mathbf{I} \right)^{-1}
+    \right]\mathbf{R}^T\mathbf{y} \notag\\
+    &= \lambda^{-1}\mathbf{V} \left[\mathbf{I} - \lambda^{-1}
+    \left(\lambda\mathbf{I} - \lambda^2(\mathbf{R}^T\mathbf{R} +
+    \lambda\mathbf{I})^{-1} \right) \right]\mathbf{R}^T\mathbf{y} \notag \\
+    &= \mathbf{V} (\mathbf{R}^T\mathbf{R} +
+    \lambda\mathbf{I})^{-1} \mathbf{R}^T\mathbf{y}
+  \end{align}
+  Through this proof we have made use of the Woodbury matrix identity twice.
+  (What has it to do with the hint?)
+\end{exercise}
+
+\begin{exercise}
+  $\forall\bm{\beta}, \beta_0$, let $\theta_0 = \beta_0$ and decompose
+  $\bm{\beta}$ as $\bm{\beta} = \mathbf{V}\bm{\theta} +
+  \mathbf{V}_{\perp}\bm{\theta}_{\perp}$, where $\mathbf{V}_{\perp}$
+  is a set of orthonormal vectors representing the complementary space of 
+  $\mathbf{V}$.
+  Consequently
+  \begin{subequations}
+    \begin{align}
+      \mathbf{X}\bm{\beta} + \beta_0\mathbf{1} & = \mathbf{R}\bm{\theta} +
+      \theta_0\mathbf{1} \\
+      \bm{\beta}^T\bm{\beta} = \bm{\theta}^T\bm{\theta} & +
+      \bm{\theta}_{\perp}^T\bm{\theta}_{\perp} \geq \bm{\theta}^T\bm{\theta}
+    \end{align}
+  \end{subequations}
+  This suggests that a solution to (18.16) must have $\hat{\bm{\theta}}_{\perp}
+  = \mathbf{0}$. Consequently, the solution to (18.16) can be constructed from
+  the solution to (18.17) by $\hat{\bm{\beta}} = \mathbf{V}\hat{\bm{\theta}}$,
+  $\hat{\beta}_0 = \hat{\theta}_0$.
+\end{exercise}
+
+\begin{exercise}
+  (Not Section 4.14 but equation (4.14).) Write the regularized discriminant
+  analysis (RDA) into the ASR form in (12.57):
+  \begin{align}
+    ASR = \frac{1}{N}\sum_{l=1}^L \left[\sum_{i=1}^N \left(\theta_l(g_i) -
+    \beta_{l0} - \mathbf{x}_i^T\mathbf{\bm{\beta}}_l \right)^2 +
+    \frac{1-\gamma}{\gamma} \hat{\sigma}^2\bm{\beta}_l^T\bm{\beta}_l \right]
+  \end{align}
+  which is now in the form as in Sec.18.3.5. By defining $\beta_{l0} = u_{l0}$,
+  $\bm{\beta}_l = \mathbf{V}\mathbf{u}_l$, we can solve a smaller problem for
+  $\hat{u}_{l0}, \hat{\mathbf{u}}_l$, $l=1,\ldots,L$ then map them back to get
+  $\hat{\beta}_{l0}, \hat{\bm{\beta}}_l$.
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    As $\mathbf{y} = \mathbf{X}\bm{\beta}$, we have
+    $\mathbf{R}^{-1}\mathbf{y} = \mathbf{V}^T\bm{\beta}$. Since $\mathbf{V}^T$
+    has rank $N$, this equation must have at least 1 solution denoted as
+    $\bm{\beta}_0$. Consequently, 
+    \begin{align}
+      \bm{\beta} = \bm{\beta}_0 + \mathbf{V}_{\perp}\bm{\beta}_{\perp}
+    \end{align}
+    where $\mathbf{V}_{\perp}$ (rank $N - p$) represent the complementary space
+    of $\mathbf{V}$, is a solution for arbitrary $\bm{\beta}_{\perp}$.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    Same as Ex. (18.4).
+  \end{exerciseSection}
+
+  \begin{exerciseSection}
+    \begin{align}
+      \mathbf{X}\hat{\bm{\beta}}_0 =
+      \mathbf{UDV}^T\mathbf{VD}^{-1}\mathbf{U}^T\mathbf{y} = \mathbf{y}
+    \end{align}
+    thus there is zero residual. Denote a solution as $\bm{\beta} =
+    \mathbf{V}\bm{\theta} + \mathbf{V}_{\perp}\bm{\theta}_{\perp}$. Since 
+    $\mathbf{y} = \mathbf{X}\bm{\beta} = \mathbf{R}\bm{\theta}$, we have
+    $\bm{\theta} = \mathbf{R}^{-1}\mathbf{y}$, therefore $\bm{\beta}$ can be
+    rewritten as
+    \begin{align}
+      \beta = \mathbf{VR}^{-1}\mathbf{y} + \mathbf{V}_{\perp}\bm{\theta}_{\perp}
+    \end{align}
+    Since $\|\beta \|^2 = \|\mathbf{R}^{-1}\mathbf{y}\|^2 +
+    \|\bm{\theta}_{\perp}\|^2 \leq \|\mathbf{R}^{-1}\mathbf{y}\|^2$, in which
+    equality holds iff $\beta = \mathbf{VR}^{-1}\mathbf{y}$. As a result, it
+    is unique with the smallest Euclidean norm.
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    Decompose $\mathbf{X} = \mathbf{RV}^T$. Then $\mathbf{X}\bm{\beta}$ projects
+    to $\pm(1-\alpha)$ for $\bm{\beta} = \mathbf{VR}^{-1}\mathbf{y} + \mathbf{V}_{\perp}\bm{\beta}_{\perp}$
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    Since
+    \begin{align}
+      \frac{\mathbf{x}_i^T\hat{\bm{\beta}}} {\|\hat{\bm{\beta}}\|} =
+      \frac{\pm(1-\alpha)}{\hat{\bm{\beta}}}
+    \end{align}
+    therefore the distance is $2/\hat{\bm{\beta}}$.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    Same as Ex 18.7. Largest distance achieved by $\hat{\bm{\beta}}_0$ which has
+    the smallest Euclidean norm.
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  Apparently optimal separating hyperplane makes the widest margin by its
+  definition. Specifically, (4.48) when $p\gg N$ must have a solution
+  $\tilde{\bm{\beta}}$, which means $\forall i, j$ such that $y_i = 1$,
+  $y_j=-1$, we have
+  \begin{align}
+    \mathbf{x}_i^T\tilde{\bm{\beta}} + \tilde{\beta}_0 \geq 1,\;
+    \mathbf{x}_j^T\tilde{\bm{\beta}} + \tilde{\beta}_0 \leq 1
+  \end{align}
+  Consequently the margin is at least $2/\|\tilde{\bm{\beta}}\|$. Also we must
+  have $\|\tilde{\bm{\beta}}\| \leq \|\hat{\bm{\beta}}_0\|$, since the later is
+  also valid for the constraints in (4.48). As a result, optimal separating
+  hyperplane separates data by a wider margin then does the data piling
+  direction.
+\end{exercise}
+
+\begin{exercise}
+  Decompose $\mathbf{X}$ into $\mathbf{X}=\mathbf{RV}^T$. Then we can project
+  $\bar{\mathbf{x}}_1$ and $\bar{\mathbf{x}}_{-1}$ onto $\mathbf{V}$ as
+  \begin{align}
+    \bar{\mathbf{r}}_1 = \mathbf{V}^T\bar{\mathbf{x}}_1, &\;
+    \bar{\mathbf{r}}_{-1} = \mathbf{V}^T\bar{\mathbf{x}}_{-1} \\
+    \bar{\mathbf{x}}_1 = \mathbf{V}\bar{\mathbf{r}}_1, &\; 
+    \bar{\mathbf{x}}_{-1} = \mathbf{V}\bar{\mathbf{r}}_{-1}
+  \end{align}
+  and the within-class variance matrix for $\mathbf{R}$ satisfies $\mathbf{W} =
+  \mathbf{V}\mathbf{W}_R\mathbf{V}^T$. For any $\mathbf{x}$, we decompose it
+  into $\mathbf{x} = \mathbf{Vr} + \mathbf{V}_{\perp}\mathbf{r}_{\perp}$. Then
+  the discrimant function becomes
+  \begin{align}
+    & \mathbf{x}^T(\mathbf{W} + \lambda\mathbf{I})^{-1}(\bar{\mathbf{x}}_1 -
+    \bar{\mathbf{x}}_{-1}) \notag \\
+    = & (\mathbf{r}^T\mathbf{V}^T + \mathbf{r}_{\perp}^T\mathbf{V}_{\perp}^T)
+    (\mathbf{V}\mathbf{W}_R\mathbf{V}^T +
+    \lambda\mathbf{I})^{-1}\mathbf{V}(\bar{\mathbf{r}}_1 -
+    \bar{\mathbf{r}}_{-1}) \notag \\
+    = & (\mathbf{r}^T\mathbf{V}^T + \mathbf{r}_{\perp}^T\mathbf{V}_{\perp}^T)
+    \mathbf{V}(\mathbf{W}_R + \lambda\mathbf{I})^{-1}(\bar{\mathbf{r}}_1 -
+    \bar{\mathbf{r}}_{-1})\notag \\
+    = & \mathbf{r}^T(\mathbf{W}_R + \lambda\mathbf{I})^{-1}(\bar{\mathbf{r}}_1 -
+    \bar{\mathbf{r}}_{-1})
+  \end{align}
+  where the proof is similar to Ex. 18.4. Consequently, the discriminant
+  function can be redefined on $\mathbf{r}$:
+  \begin{align}
+    \delta_0(\mathbf{r}) = \lim_{\lambda\rightarrow 0}\delta(\mathbf{r}) =
+    \mathbf{r}^T \mathbf{W}_R^{-1}(\bar{\mathbf{r}}_1 -
+    \bar{\mathbf{r}}_{-1})
+  \end{align}
+  
+  On the other hand, for the solution $\hat{\bm{\beta}}$ to the linear response
+  regression to binary response $\pm1$, we have $\mathbf{x}^{T}\hat{\bm{\beta}} =
+  \mathbf{r}^{T}\mathbf{R}^{-1}\mathbf{y}$.
+  According to Ex. 4.2 we have $\mathbf{R}^{-1}\mathbf{y} \propto
+  \mathbf{W}_R^{-1}(\bar{\mathbf{r}}_1 - \bar{\mathbf{r}}_{-1})$ (Assuming
+  $N_1=N_2$). Consequently $\delta_0(\mathbf{r})$ is equivalent to the
+  projection onto the maximal data piling direction up to scaling.
+\end{exercise}
+
+\begin{exercise}
+  The optimal solution is characterized by (4.21)
+  \begin{align}
+    \pdv{l(\bm{\beta})}{\bm{\beta}} = \sum_{i=1}^N\mathbf{x}_i^T 
+    \left(y_i - \frac{\exp(\alpha + \mathbf{x}_i^T\bm{\beta})}{1 + \exp(\alpha +
+    \mathbf{x}_i^T\bm{\beta})} \right) = \mathbf{0}
+  \end{align}
+  If $\bm{\beta}_0$ is a solution, then $\bm{\beta}_0 + \Delta\bm{\beta}$ where
+  $\mathbf{X}\Delta\bm{\beta} = \mathbf{0}$ is also a solution. Since $p\gg N$,
+  there are intinitely many $\Delta\bm{\beta}$. Consequently, $\bm{\beta}$ is
+  undefined.
+\end{exercise}
+
+\begin{exercise}
+  $\mathbf{X} = \mathbf{RV}^T$ implies that $\mathbf{X}_B =
+  \mathbf{R}_B\mathbf{V}^T$, where $\mathbf{R}_B$ corresponds to the same rows
+  in $\mathbf{R}$ as does the CV samples $\mathbf{X}_B$ to $\mathbf{X}$.
+  Consequetnly, we need to reduce $\mathbf{X}$ to $\mathbf{R}$ only once, and CV
+  fitting can be done on subsets of rows of $\mathbf{R}$.
+\end{exercise}
+
+\begin{exercise}
+  Denot the logit function as $\mbox{logit}(\mathbf{x}) = a_0 +
+  \mathbf{x}^T\mathbf{a}$, then the ridged logistic regression is in the form of
+  \begin{align}
+    \min_{a_0, \mathbf{a}} \sum_{i=1}^N y_i\log\frac{\exp(a_0 +
+    \mathbf{x}_i^T\mathbf{a})}{1 + \exp(a_0 + \mathbf{x}_i^T\mathbf{a})}
+    + (1 - y_i)\log\frac{1}{1 + \exp(a_0 + \mathbf{x}_i^T\mathbf{a})} 
+    + \lambda\|\mathbf{a}\|^2
+  \end{align}
+  Similar to Ex 18.7, denote $\beta_0 = a_0$, $\mathbf{a} =
+  \mathbf{V}\bm{\beta}$, this problem is equivalent to the ridged logistic
+  regression in $\mathbf{R}$ instead of $\mathbf{X}$ where $\mathbf{X} =
+  \mathbf{RV}^T$:
+  \begin{align}
+    \min_{\beta_0, \bm{\beta}} \sum_{i=1}^N y_i\log\frac{\exp(\beta_0 +
+    \mathbf{r}_i^T\bm{\beta})}{1 + \exp(\beta_0 + \mathbf{r}_i^T\bm{\beta})}
+    + (1 - y_i)\log\frac{1}{1 + \exp(\beta_0 + \mathbf{r}_i^T\bm{\beta})} 
+    + \lambda\|\bm{\beta}\|^2
+  \end{align}
+  Then the predictions are given by
+  \begin{align}
+    \hat{f}_0 & = \hat{a}_0 + \mathbf{x}_0^T\hat{\mathbf{a}} \notag \\
+    &= \hat{\beta}_0 + \mathbf{x}_0^T\mathbf{V}\hat{\bm{\beta}} \notag \\
+    &= \hat{\beta}_0 + \mathbf{x}_0^T\mathbf{VDU}^T\mathbf{UD}^{-1}
+    \hat{\bm{\beta}} \notag \\
+    &= \hat{\beta}_0 + \mathbf{k}_0^T \mathbf{UD}^{-1}\hat{\bm{\beta}}
+  \end{align}
+  therefore $\hat{\alpha} = \mathbf{UD}^{-1}\hat{\bm{\beta}}$.
+  
+  With the logit function in kernel space
+  $\mbox{logit}(\mathbf{x}) = h(\mathbf{x}), h\in\mathcal{H}_K$, the kernel
+  ridged logistic regression problem is
+  \begin{align}
+    \min_{h\in\mathcal{H}_K} = \sum_{i=1}^N y_i\log\frac{\exp(h(\mathbf{x}_i))}
+    {1 + \exp(h(\mathbf{x}_i))} + (1 - y_i)\log\frac{1}{1 +
+    \exp(h(\mathbf{x}_i))} + \lambda\|h\|_{\mathcal{H}_K}^2
+  \end{align}
+  According to (5.48), the solution must be in the form of
+  \begin{align}
+    h(\mathbf{x}) = \sum_{i=1}^N\beta_iK(\mathbf{x}, \mathbf{x}_i)
+  \end{align}
+  therefore the ridged regression can be rewritten as
+  \begin{align}
+    \min_{\bm{\beta}} \sum_{i=1}^N y_i\log\frac{\exp(\mathbf{k}_i^T\bm{\beta})}
+    {1 + \exp(\mathbf{k}_i^T\bm{\beta})} + (1 - y_i)\log\frac{1}{1 +
+    \exp(\mathbf{k}_i^T\bm{\beta})} + \lambda\bm{\beta}^T\mathbf{K}\bm{\beta}
+  \end{align}
+  where $\mathbf{k}_i$ is the $i$-th column of $\mathbf{K}$. Denote $\mathbf{b}
+  = \mathbf{DU}^T\bm{\beta}$, then the ridged regression is equivalent to
+  \begin{align}
+    \min_{\mathbf{b}} \sum_{i=1}^N y_i\log\frac{\exp(\mathbf{r}_i^T\mathbf{b})}
+    {1 + \exp(\mathbf{r}_i^T\mathbf{b})} + (1 - y_i)\log\frac{1}{1 +
+    \exp(\mathbf{r}_i^T\mathbf{b})} + \lambda\|\mathbf{b}\|^2
+  \end{align}
+  Assuming the optimal solution $\mathbf{b}$, then the prediction is
+  \begin{align}
+    h(\mathbf{x}_0) = \mathbf{k}_0^T\hat{\beta} = \mathbf{k}_0^T
+    \mathbf{UD}^{-1}\mathbf{b}
+  \end{align}
+  where $\mathbf{k}_0 = [K(\mathbf{x}_0, \mathbf{x}_1),\ldots, K(\mathbf{x}_0,
+  \mathbf{x}_N)]^T$.
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    \begin{align}
+      f_+(x_0) & \approx \frac{\mbox{Total number in class +1 in this
+      region}}{(\mbox{Total number in class +1})(\mbox{Volumn of this region})}
+      \notag \\
+      & = \frac{1}{N_+d_+(x_0)^p}
+    \end{align}
+    Therefore the discriminant function
+    \begin{align}
+      \delta(x_0) = \log\frac{p_+(x_0)}{p_-(x_0)} =
+      \log\frac{\pi_+f_+(x_0)}{\pi_-f_-(x_0)}
+    \end{align}
+    If we estimate the prior distribution as $\pi_+ = N_+ / N$, $\pi_- = N_- /
+    N$, then 
+    \begin{align}
+      \delta(x_0) = p\log\frac{d_-(x_0)}{d_+(x_0)}
+    \end{align}
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    If $\pi_+$, $\pi_-$ is given, then 
+    \begin{align}
+      \delta(x_0) = \log\frac{\pi_+}{\pi_-} + \log\frac{N_-}{N_+} + 
+      p\log\frac{d_-(x_0)}{d_+(x_0)}
+    \end{align}
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    Simply redefine $d_+(x_0)$ as the smallest distance within which there are
+    $k$ samples in class +1, and $d_-(x_0)$ as the smallest distance within
+    which there are $k$ samples in class -1. The results are the same as (a),
+    (b).
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  First we show that the $m$-th component $\mathbf{z}_m$ can be written as
+  $z_{im} = \sum_{j=1}^N\alpha_{jm}K(\mathbf{x}_i, \mathbf{x}_j)$ up to
+  centering, where $\alpha_{jm} = u_{jm}/d_m$. Since $z_{im}$ is the entry in
+  the $i$-th row, $m$-th column of $\mathbf{Z}^T$, where
+  \begin{align}
+    \mathbf{Z}^T = \mathbf{DU}^T = \mathbf{D}^{-1}\mathbf{U}^T(\mathbf{I} -
+    \mathbf{M})\mathbf{K}(\mathbf{I} - \mathbf{M})
+  \end{align}
+  Therefore $z_{im}$ equals to the product of the $i$-th row of
+  $\mathbf{D}^{-1}\mathbf{U}^T$ and the $m$-th column of $(\mathbf{I} -
+  \mathbf{M})\mathbf{K}(\mathbf{I} - \mathbf{M})$. Note that the $j$-th element
+  of the former is $u_{jm}/d_m$ and the $j$-th element of the latter is
+  $\langle h(\mathbf{x}_i) - \bar{h}, h(\mathbf{x}_j) - \bar{h})\rangle$ where
+  $\bar{h} = \sum_{j=1}^N h(\mathbf{x}_j) / N$.
+  
+  Denote the centered projection of $\mathbf{x}_0$ onto the principle component
+  direction as $\mathbf{z}_0$, then its $m$-th element is
+  \begin{align}
+    z_{0m} & = \left\langle h(\mathbf{x}_0) - \bar{h},
+    \sum_{j=1}^N\frac{u_{jm}}{d_m} (h(\mathbf{x}_j) - \bar{h})\right\rangle
+    \notag \\
+    & = \sum_{j=1}^N \frac{u_{jm}}{d_m}\left[\langle h(\mathbf{x}_0),
+    h(\mathbf{x}_j)\rangle - \langle h(\mathbf{x}_0), \bar{h} \rangle - \langle
+    \bar{h}, h(\mathbf{x}_j) \rangle + \langle \bar{h}, \bar{h} \rangle \right]
+    \notag \\
+    & = \sum_{j=1}^N \frac{u_{jm}}{d_m} \left[k_{0j} - (\mathbf{Mk}_0)_j -
+    (\mathbf{K1})_j / N + \mathbf{1}^T\mathbf{K1} \right]
+  \end{align}
+  Again $u_{jm}/d_m$ is the $m$-th row, $j$-th column of
+  $\mathbf{D}^{-1}\mathbf{U}^T$, and the term in the squared bracket equals to
+  the $j$-th element of $(\mathbf{I} - \mathbf{M})[\mathbf{k}_0 -
+  \mathbf{K1}/N]$. Consequently,
+  \begin{align}
+    \mathbf{z}_0 = \mathbf{D}^{-1}\mathbf{U}^T (\mathbf{I} -
+    \mathbf{M})[\mathbf{k}_0 - \mathbf{K1}/N]
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    \begin{align}
+      \mbox{Pr}(A) = \mbox{Pr}(\cup_{j=1}^MA_j) \leq \sum_{j=1}^M \mbox{Pr}(A_j)
+      = \alpha
+    \end{align}
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    When $\alpha/M$ is small, the first-order approximation
+    \begin{align}
+      1 - (1 - \alpha/M)^M \approx \alpha
+    \end{align}
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    Since $p_{(1)} \leq \ldots \leq p_{(M)}$, $|t_1|\geq\ldots\geq|t_M|$, we
+    have $|T|_{(L)} = |t_L|$. By definition in (18.41),
+    \begin{align}
+      p_0 = p_{(L)} = \frac{1}{MK}\sum_{j=1}^M \sum_{k=1}^K I(|t_{j}^k| >
+      |t_L|)
+    \end{align}
+    thus there are at most $p_0$ of $|t_{j}^k| > |t_L| = |T|_{(L)}$. For the
+    plug-in estimation, we have
+    \begin{align}
+      R_{\mbox{obs}} & = \sum_{j=1}^M I(|t_j| > |t_L|) = L \\
+      \widehat{\mbox{E}(V)} & = M\cdot \frac{1}{MK}\sum_{j=1}^M \sum_{k=1}^K
+      I(|t_{j}^k| > |t_L|) \leq p_0M
+    \end{align}
+    therefore $\widehat{\mbox{FDR}}\leq p_0M/L = \alpha$.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    According to (18.44)
+    \begin{align}
+      p_{(L+1)} & > \alpha \frac{L+1}{M} \notag \\
+      & = \frac{1}{MK}\sum_{j=1}^M \sum_{k=1}^K I(|t_{j}^k| > |t_{L+1}|) \notag
+      \\
+      &= \frac{\widehat{\mbox{E}(V)}}{M}
+    \end{align}
+    Also we have
+    \begin{align}
+      R_{\mbox{obs}} & = \sum_{j=1}^M I(|t_j| > |t_{L+1}|) = L + 1
+    \end{align}
+    therefore $\widehat{\mbox{FDR}} =  \widehat{\mbox{E}(V)} / R_{\mbox{obs}} >
+    \alpha$.
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \mbox{pFDR}(\Gamma) &= \frac{\mbox{Pr}(\mbox{$j$-th null hypothesis
+    is true and the null hypothesis is rejected})} {\mbox{Pr}(\mbox{$j$-th null
+    hypothesis is rejected})} \notag \\
+    & = \frac{\mbox{Pr}(Z_j=0,t_j\in\Gamma)}{\mbox{Pr}(t_j\in\Gamma)} \notag\\
+    & = \frac{\mbox{Pr}(Z_j=0)\mbox{Pr}(t_j\in\Gamma|Z_j=0)}
+    {\mbox{Pr}(Z_j=0)\mbox{Pr}(t_j\in\Gamma|Z_j=0) +
+    \mbox{Pr}(Z_j=1)\mbox{Pr}(t_j\in\Gamma|Z_j=1)} \notag \\
+    & = \frac{\pi_0 \{\mbox{Type I error of $\Gamma$}\}} {\pi_0 \{\mbox{Type I
+    error of $\Gamma$}\} + \pi_1 \{\mbox{Power of $\Gamma$}\}}
+  \end{align}
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \mbox{pFDR} & = \mbox{E}\left[\frac{V}{R}|R>0\right] \notag \\
+    & = \sum_{k=1}^M \mbox{E}\left[\frac{V}{R}|R=k\right]\mbox{Pr}(R=k|k=0)
+  \end{align}
+  Since $V$ is binomial distributed from $0$ to $k$ given $k$, the expectation
+  of $V$ given $k$ is
+  \begin{align}
+    \mbox{E}_k[V] = k\mbox{Pr}(H=0|T\in \Gamma)
+  \end{align}
+  therefore
+  \begin{align}
+    \mbox{pFDR} & = \sum_{k=1}^M \mbox{Pr}(H=0|T\in \Gamma) \mbox{Pr}(R=k|k=0)
+    \notag \\
+    &= \mbox{Pr}(H=0|T\in \Gamma)
+  \end{align}
+\end{exercise}
