@@ -1,2 +1,193 @@
 \chapter{Model Assessment and Selection}
 \label{ch:7}
+
+\begin{exercise}
+  \begin{align}
+    \mathbb{E}_{\mathbf{y}}\left[\mbox{Err}_{\mbox{in}}\right] &= \frac{1}{N}
+    \mathbb{E}_{\mathbf{y},
+    \mathbf{y}^0}\left[\|\mathbf{y}^0 - \hat{f}(\mathbf{x})\|^2|\mathcal{T} \right] \notag \\
+    &= \frac{1}{N}
+    \mathbb{E}_{\mathbf{y},\mathbf{y}^0}\left[
+    \|\mathbf{y}^0 -
+    \mathbf{X}(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}\|^2|\mathcal{T}
+     \right] \notag \\
+    &= \frac{1}{N}
+    \mathbb{E}_{\mathbf{y},\mathbf{y}^0}\left[\|(\mathbf{y}^0 -
+    \mathbf{X}(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}^0) + 
+     \mathbf{X}(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T(\mathbf{y}^0 -
+     \mathbf{y})\|^2|\mathcal{T}
+    \right] \notag \\
+    &= \frac{1}{N} \mathbb{E}_{\mathbf{y}^0} \left[\|(\mathbf{y}^0 -
+    \mathbf{X}(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}^0)\|^2\right]
+    +
+    \frac{1}{N}
+    \mathbb{E}_{\bm{\epsilon}, \bm{\epsilon}^0}\left[
+    \|\mathbf{X}(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T(\bm{\epsilon}^0 -
+    \bm{\epsilon})\|^2 \right] \notag\\
+    &= \mathbb{E}_{\mathbf{y}}(\overline{\mbox{err}}) +
+    \frac{2\sigma_{\epsilon}^2}{N}\mbox{tr}\left(\mathbf{X}(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T
+    \right) \notag\\
+    &= \mathbb{E}_{\mathbf{y}}(\overline{\mbox{err}}) +
+    \frac{2d}{N}\sigma_{\epsilon}^2
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \mbox{Err}(x_0) &= \mbox{Pr}(Y\not= \hat{G}(x_0)|X=x_0) \notag\\
+    &= \mbox{Pr}(Y\not= G(x_0)|X=x_0)\left[
+    \mbox{Pr}(G(x_0)=\hat{G}(x_0)|X=x_0) +
+    \mbox{Pr}(G(x_0)\not=\hat{G}(x_0)|X=x_0)\right] \notag\\
+    &+ \left[\mbox{Pr}(Y=G(x_0)|X=x_0) - \mbox{Pr}(Y\not=G(x_0)|X=x_0)\right]
+    \mbox{Pr}(G(x_0)\not=\hat{G}(x_0)|X=x_0) \notag\\
+    &= \mbox{Err}_{\mbox{B}}(x_0) + \left[\mbox{Pr}(Y=G(x_0)|X=x_0) -
+    \mbox{Pr}(Y\not=G(x_0)|X=x_0)\right]\mbox{Pr}(G(x_0)\not=\hat{G}(x_0)|X=x_0)
+    \notag\\
+    &= \mbox{Err}_{\mbox{B}}(x_0)  +
+    |1-2f(x_0)|\mbox{Pr}(G(x_0)\not=\hat{G}(x_0)|X=x_0)
+  \end{align}
+  
+  \begin{itemize}
+    \item If $f(x_0)\geq 1/2$ therefore $G(x_0)=1$, we have
+    \begin{align}
+      \mbox{Pr}(G(x_0)\not=\hat{G}(x_0)|X=x_0) =
+      \mbox{Pr}(\hat{f}(x_0)<1/2) \approx
+      \Phi\left(\frac{-\mathbb{E}\left[\hat{f}(x_0)\right]+1/2 }
+      {\sqrt{\mbox{var}(\hat{f}(x_0))}}\right)
+    \end{align}
+    \item Otherwise $f(x_0)< 1/2$ thus $G(x_0)=0$, we have
+    \begin{align}
+      \mbox{Pr}(G(x_0)\not=\hat{G}(x_0)|X=x_0) =
+      \mbox{Pr}(\hat{f}(x_0)\geq1/2) \approx
+      \Phi\left(\frac{\mathbb{E}\left[\hat{f}(x_0)\right]-1/2}
+      {\sqrt{\mbox{var}(\hat{f}(x_0))}}\right)
+    \end{align}
+  \end{itemize}
+  Consequently, Eq. (7.63) is proved.
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    Denote $\mathbf{x}_i$ as the column vector representing the $i$-th record,
+    i.e. the transpose of the $i$-th row of $\mathbf{X}$.
+    \begin{align}
+      y_i-\hat{f}^{-i}(\mathbf{x}_i) =
+      y_i-\mathbf{x}_i^T(\mathbf{X}_{-i}^T\mathbf{X}_{-i})^{-1}
+      \mathbf{X}_{-i}^T\mathbf{y}_{-i}
+    \end{align}
+    where
+    \begin{subequations}
+      \begin{align}
+        (\mathbf{X}_{-i}^T\mathbf{X}_{-i})^{-1} &= \left(\mathbf{X}^T\mathbf{X} -
+        \mathbf{x}_i\mathbf{x}_i^T \right)^{-1} \notag\\
+        &= \left(\mathbf{X}^T\mathbf{X}\right)^{-1} - 
+        \left(\mathbf{X}^T\mathbf{X}\right)^{-1} \mathbf{x}_i\left(-1 +
+        \mathbf{x}_i^T(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{x}_i\right)^{-1}\mathbf{x}_i^T
+        \left(\mathbf{X}^T\mathbf{X}\right)^{-1} \notag\\
+        &= \left(\mathbf{X}^T\mathbf{X}\right)^{-1} + \frac{1}{1-S_{ii}}
+        \left(\mathbf{X}^T\mathbf{X}\right)^{-1} \mathbf{x}_i\mathbf{x}_i^T
+        \left(\mathbf{X}^T\mathbf{X}\right)^{-1} \\
+        \mathbf{X}_{-i}^T\mathbf{y}_{-i} &= \mathbf{X}^T\mathbf{y}
+        -\mathbf{x}_iy_i
+      \end{align}
+    \end{subequations}
+    therefore
+    \begin{align}
+      y_i-\hat{f}^{-i}(\mathbf{x}_i) &= y_i -
+      \left[\mathbf{x}_i^T\left(\mathbf{X}^T\mathbf{X}\right)^{-1}\mathbf{X}^T\mathbf{y}
+      + \frac{1}{1-S_{ii}} \mathbf{x}_i^T
+      \left(\mathbf{X}^T\mathbf{X}\right)^{-1} \mathbf{x}_i\mathbf{x}_i^T
+      \left(\mathbf{X}^T\mathbf{X}\right)^{-1} \mathbf{X}^T\mathbf{y}\right.
+      \notag\\
+      & -  
+      \left. \mathbf{x}_i^T\left(\mathbf{X}^T\mathbf{X}\right)^{-1}
+      \mathbf{x}_iy_i -
+      \frac{1}{1-S_{ii}} \mathbf{x}_i^T \left(\mathbf{X}^T\mathbf{X}\right)^{-1}
+      \mathbf{x}_i\mathbf{x}_i^T \left(\mathbf{X}^T\mathbf{X}\right)^{-1}
+      \mathbf{x}_iy_i\right] \notag\\
+      &= y_i - \left[\hat{f}(\mathbf{x}_i) +
+      \frac{S_{ii}}{1-S_{ii}}\hat{f}(\mathbf{x}_i) - S_{ii}y_i -
+      \frac{S_{ii}^2}{1-S_{ii}}y_i \right]\notag\\
+      &= \frac{1}{1-S_{ii}}\left(y_i - \hat{f}(\mathbf{x}_i) \right)
+    \end{align}
+  \end{exerciseSection}
+  \begin{exerciseSection}
+    Since $\mathbf{S} = \mathbf{UU}^T$, where $\mathbf{X} = \mathbf{UDV}^T$ is
+    the SVD of $\mathbf{X}$, $0\leq S_{ii}\leq 1$, thus
+    \begin{align}
+      \left|y_i-\hat{f}^{-i}(\mathbf{x}_i)\right| \geq
+      \left|y_i-\hat{f}(\mathbf{x}_i)\right|
+    \end{align}
+  \end{exerciseSection}
+  \begin{exerciseSection}
+    ???
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  Denote $\hat{f}(\mathbf{x}_i) = \hat{y}_i$ (which of course also depends on
+  $\mathbf{X}$, $\mathbf{y}$), then
+  \begin{align}
+    \mathbb{E}_{\mathbf{y}}[\mbox{Err}_{\mbox{in}}] -
+    \mathbb{E}_{\mathbf{y}}[\overline{\mbox{err}}] & =
+    \frac{1}{N}\mathbb{E}_{\mathbf{y}, \mathbf{y}^0} \left[\sum_{i=1}^N
+    \|y_i^0 - \hat{y}_i\|^2 \right] - \frac{1}{N} \mathbb{E}_{\mathbf{y},
+    \mathbf{y}^0} \left[\sum_{i=1}^N \|y_i - \hat{y}_i\|^2 \right] \notag\\
+    &= \frac{2}{N}\sum_{i=1}^N \mathbb{E}_{\mathbf{y}}\left[y_i\hat{y}_i \right]
+    - \mathbb{E}_{\mathbf{y},\mathbf{y}^0}\left[y_i^0\hat{y}_i \right] \notag\\
+    &= \frac{2}{N}\sum_{i=1}^N \mathbb{E}_{\mathbf{y}}\left[y_i\hat{y}_i \right]
+    - \mathbb{E}_{\mathbf{y}}\left[y_i\right]
+    \mathbb{E}_{\mathbf{y}}\left[\hat{y}_i \right] \notag\\
+    &= \frac{2}{N}\sum_{i=1}^N\mbox{cov}(y_i, \hat{y}_i)
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \sum_{i=1}^N \mbox{cov}(y_i, \hat{y}_i) &= \mbox{tr} \left(\mathbb{E}\left[
+    (\mathbf{y} - \bar{\mathbf{y}})(\mathbf{S}(\mathbf{y} -
+    \bar{\mathbf{y}}))^T\right] \right) \notag\\
+    &= \mbox{tr}\left(\mathbb{E}\left[(\mathbf{y} - \bar{\mathbf{y}})(\mathbf{y}
+    - \bar{\mathbf{y}})^T \right]\mathbf{S} \right) \notag\\
+    &= \mbox{tr}(\mathbf{S})\sigma_{\epsilon}^2
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  For $k$-nearest-neighbor regression, $\mathbf{S}$ equals to $1/k$ times a
+  $N$-by-$N$ binary matrix which
+  \begin{itemize}
+    \item Each row has exactly $k$ 1s and $N-k$ 0s.
+    \item The diagonal entries are all 1s.
+  \end{itemize}
+  Therefore $\mbox{tr}(\mathbf{S}) = N/k$.
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \mbox{GCV} &= \frac{1}{N(1-d/N)^2}\sum_{i=1}^N\left(y_i -
+    \hat{f}(\mathbf{x}_i)\right)^2 \notag\\
+    &\approx \frac{1}{N}\left(1 + \frac{2d}{N} \right) \sum_{i=1}^N\left(y_i -
+    \hat{f}(\mathbf{x}_i)\right)^2  \notag\\
+    &= \overline{\mbox{err}} + \frac{2d}{N}\hat{\sigma}_{\epsilon}^2 \notag\\
+    &= C_p
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  $\alpha$ can be constructed as
+  \begin{align}
+    \alpha = \frac{\pi}{2}\left(10^{l+1} + \sum_{i=1}^ld_i10^i\right)
+  \end{align}
+  where $d_i = 1$ if the $i$-th point is assigned label 0 and $d_i =3$
+  otherwise. Apparenty, $\sin(\alpha z^i) <0 $ if $d_i = 1$ and $\sin(\alpha
+  z^i) >0 $ otherwise, thus $sin(\alpha x)$ shatters $z^1,\ldots,z^l$.
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}
+  No, this is not the right way to do CV. One should select a different
+  predictor individually for each validation set and then carries out the CV.
+\end{exercise}
