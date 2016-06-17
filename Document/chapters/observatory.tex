@@ -1,2 +1,318 @@
 \chapter{Boosting and Additive Trees}
 \label{ch:10}
+
+\begin{exercise}
+  To minimize the exponential loss function (defined between Eq. (10.10) and
+  (10.11))
+  \begin{align}
+    L_m(\beta) &= \sum_{i=1}^Nw_i^{(m)}\exp(-\beta y_iG_m(x_i)) \notag\\
+    &= \exp(-\beta)\sum_{y_i=G_m(x_i)}w_i{(m)} +
+    \exp(\beta)\sum_{y_i\not=G_m(x_i)}w_i{(m)}
+  \end{align}
+  the stationary condition suggests that
+  \begin{align}
+    \pdv{L_m}{\beta} &= -\exp(-\beta)\sum_{y_i=G_m(x_i)}w_i{(m)} +
+    \exp(\beta)\sum_{y_i\not=G_m(x_i)}w_i{(m)}=0
+  \end{align}
+  therefore
+  \begin{align}
+    \beta_m &= \frac{1}{2}\log\frac{\sum_{y_i=G_m(x_i)}w_i{(m)}}
+    {\sum_{y_i\not=G_m(x_i)}w_i{(m)} } =
+    \frac{1}{2}\log\frac{1-\overline{\mbox{err}}_m} {\overline{\mbox{err}}_m}
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \mathbb{E}_{Y|x} \left(e^{-Yf(x)}\right) = \mbox{Pr}(Y=1|x)e^{-f(x)} +
+    \mbox{Pr}(Y=-1|x)e^{f(x)}
+  \end{align}
+  To minimize the loss function, we have
+  \begin{align}
+    \pdv{E}{f} &= -\mbox{Pr}(Y=1|x)e^{-f(x)} +
+    \mbox{Pr}(Y=-1|x)e^{f(x)} = 0
+  \end{align}
+  therefore
+  \begin{align}
+    f^*(x) = \frac{1}{2}\log\frac{\mbox{Pr}(Y=1|x)}{\mbox{Pr}(Y=-1|x)}
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  For Eq. (10.47), we have
+  \begin{subequations}
+    \begin{align}
+      \mathbb{E}_{X_{\mathcal{C}}}[h_1(X_{\mathcal{S}}) + h_2(X_{\mathcal{C}})]
+      & = h_1(X_{\mathcal{S}}) +
+      \mathbb{E}_{X_{\mathcal{C}}}[h_2(X_{\mathcal{C}})]
+      \\
+      \mathbb{E}_{X_{\mathcal{C}}}[h_1(X_{\mathcal{S}}) h_2(X_{\mathcal{C}})]
+      & = h_1(X_{\mathcal{S}})
+      \mathbb{E}_{X_{\mathcal{C}}}[h_2(X_{\mathcal{C}})]
+    \end{align}
+  \end{subequations}
+  since $\mathbb{E}_{X_{\mathcal{C}}}[h_2(X_{\mathcal{C}})]$ is a constant
+  independent of $X_{\mathcal{S}}$, the marginal average recovers additive and
+  multiplicative functions. On the other hand,
+  \begin{subequations}
+    \begin{align}
+      \mathbb{E}_{X_{\mathcal{C}}|X_{\mathcal{S}}}[h_1(X_{\mathcal{S}}) +
+      h_2(X_{\mathcal{C}})] & = h_1(X_{\mathcal{S}}) +
+      \mathbb{E}_{X_{\mathcal{C}}|X_{\mathcal{S}}}[h_2(X_{\mathcal{C}})]
+      \\
+      \mathbb{E}_{X_{\mathcal{C}}|X_{\mathcal{S}}}[h_1(X_{\mathcal{S}})
+      h_2(X_{\mathcal{C}})] & = h_1(X_{\mathcal{S}})
+      \mathbb{E}_{X_{\mathcal{C}}|X_{\mathcal{S}}}[h_2(X_{\mathcal{C}})]
+    \end{align}
+  \end{subequations}
+  unless $X_{\mathcal{C}}$ and $X_{\mathcal{S}}$ are independent, $
+  \mathbb{E}_{X_{\mathcal{C}}|X_{\mathcal{S}}}[h_2(X_{\mathcal{C}})]$ is a
+  function of the value of $X_{\mathcal{S}}$.
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    Since $\sum_{k=1}^Kf_k =0$,
+    \begin{align}
+      E(Y,f) &= \mathbb{E}_{Y|x}\left[\exp\left(-\frac{1}{K}\sum_{k=1}^Kf_kY_k
+       \right) \right] \notag\\
+       &= \sum_{k=1}^K P_{G|x}(G=\mathcal{G}_k|x) \exp\left(-\frac{1}{K}f_k +
+       -\frac{1}{K(K-1)}\sum_{j\not=k}f_j \right) \notag\\
+       &= \sum_{k=1}^K P_{G|x}(G=\mathcal{G}_k|x) \exp\left(-\frac{1}{K-1}f_k \right)
+    \end{align}
+    Denote the Lagrangian as $l(f, \lambda) =  E(Y,f) +
+    \lambda(\sum_{k=1}^Kf_k - 1)$. To minimize $E(Y,f)$, we have
+    \begin{align}
+      \pdv{l}{f_k} = P_{G|x}(G=\mathcal{G}_k|x) \exp\left(-\frac{1}{K-1}f_k
+      \right)\left(-\frac{1}{K-1}\right) + \lambda = 0
+    \end{align} 
+    therefore
+    \begin{align}
+      f_k(x) = -(K-1)\log\frac{(K-1)\lambda}{P_{G|x}(G=\mathcal{G}_k|x)}
+    \end{align}
+    $\lambda$ can be by substituting the above equation into $\sum_{k=1}^Kf_k
+    =0$, which leads to
+    \begin{align}
+      \log[(K-1)\lambda] = \frac{1}{K}\sum_{k=1}^K\log
+      P_{G|x}(G=\mathcal{G}_k|x)
+    \end{align}
+    Consequently,
+    \begin{align}
+      f_k(x) &= (K-1)\left[\log P_{G|x}(G=\mathcal{G}_k|x) -
+      \frac{1}{K}\sum_{j=1}^K \log P_{G|x}(G=\mathcal{G}_j|x) \right].
+    \end{align}
+    Note that the first term in the squared bracket is the log-likelihood of
+    $x$ belonging to class $k$, while the second term is the mean-log-likelihood
+    of $x$ among all the $K$ classes.
+  \end{exerciseSection}
+  \begin{exerciseSection}
+    (Here $\beta_m$ is a scalar, $f_m, G_m$ are $K$-by-1 vectors and $y_i$ is a
+    1-by-$K$ vector.) We derive the multiclass boosting algorithm following
+    a similar process starting from Eq. (10.9):
+    \begin{align}
+      (\beta_m, G_m) = \arg\min_{\beta, G}\sum_{i=1}^Nw_i^{(m)}\exp(-\beta
+      y_iG(x_i))
+    \end{align}
+    where $w_i^{(m)} = \exp(-y_if_{m-1}(x_i))$, and $G$ is the output of a
+    $K$-class classifier encoded exactly the same way as $Y$.
+    Again we solve this problem in two steps. To solve $G_m$, the exponential
+    loss function can be rewritten as
+    \begin{align}
+      L^{(m)}(\beta, G) &= \sum_{i=1}^Nw_i^{(m)} \exp(-\beta
+      y_iG(x_i)) \notag\\
+      &= \sum_{y_i=G(x_i)}w_i^{(m)}\exp\left(-\beta\left[1 +
+      \frac{1}{K-1}\right]\right) \notag\\ 
+      &+
+      \sum_{y_i\not=G(x_i)} w_i^{(m)}\exp\left(-\beta\left[-\frac{2}{K-1} +
+      \frac{K-2}{(K-1)^2}\right]\right) \notag\\
+      &= \sum_{y_i=G(x_i)}w_i^{(m)}\exp\left(-
+      \frac{K}{K-1}\beta\right) +
+      \sum_{y_i\not=G(x_i)} w_i^{(m)}\exp\left(\frac{K}{K-1}\beta\right)
+      \notag\\
+      &= \exp\left(-\frac{K}{K-1}\beta\right)\sum_{i=1}^Nw_i^{(m)} \notag\\
+      &+ \left[\exp\left(\frac{K}{K-1}\beta\right) -
+      \exp\left(-\frac{K}{K-1}\beta\right) \right]\sum_{i=1}^N w_i^{(m)}I(y_i\not=G(x_i))
+    \end{align}
+    therefore
+    \begin{align}
+      G_m = \arg\min_{G} \sum_{i=1}^Nw_i^{(m)} I(y_i\not=G(x_i))
+    \end{align}
+    which is exactly the same as Eq. (10.10).
+    
+    To solve $\beta_m$, we have
+    \begin{align}
+      \pdv{L^{(m)}(\beta, G)}{\beta} &=
+      \frac{K}{K-1}\left[-\sum_{y_i=G(x_i)}w_i^{(m)}\exp\left(-\frac{K}{K-1}\beta\right)
+      + \sum_{y_i\not=G(x_i)} w_i^{(m)}\exp\left(\frac{K}{K-1}\beta\right)\right] \notag\\
+      &= 0
+    \end{align}
+    therefore
+    \begin{align}
+      \beta_m = \frac{K-1}{2K}\log\frac{\sum_{y_i=G(x_i)}w_i^{(m)}}
+      {\sum_{y_i\not=G(x_i)}w_i^{(m)}} = \frac{K-1}{2K}
+      \log\frac{1-\overline{\mbox{err}}_m} {\overline{\mbox{err}}_m}
+    \end{align}
+    for which Eq. (10.12) is a special case when $K=2$. In conclusion, the
+    overall process is almost the same as Algorithm 10.1.
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}
+  Denote the loss function for region $R_{jm}$ to minimize in Eq.
+  (10.30) as
+  \begin{align}
+    L_{jm} & = \sum_{x_i\in R_{jm}}w_i^{(m)}\exp(-y_i\gamma_{jm})\notag\\
+    &= \sum_{x_i\in R_{jm}}w_i^{(m)}\exp\left(-\gamma_{jm}\right)I(y_i=1) \notag\\ 
+    &+ \sum_{x_i\in R_{jm}}w_i^{(m)}\exp\left(\gamma_{jm}\right)I(y_i=-1) 
+  \end{align}
+  Due to the stationary condition
+  \begin{align}
+    \pdv{L_{jm}}{\gamma_{jm}} &= -\exp\left(-\gamma_{jm}\right) \sum_{x_i\in
+    R_{jm}}w_i^{(m)}I(y_i=1) +\exp\left(\gamma_{jm}\right) \sum_{x_i\in
+    R_{jm}}w_i^{(m)}I(y_i=-1) \notag\\
+    &= 0
+  \end{align}
+  we have
+  \begin{align}
+    \gamma_{jm} = \frac{1}{2}\log\frac{\sum_{x_i\in
+    R_{jm}}w_i^{(m)}I(y_i=1)} {\sum_{x_i\in
+    R_{jm}}w_i^{(m)}I(y_i=-1)}
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  (It appears that $p_{ik}$ should be defined as $p_{ik}
+  =\exp(f_k(x_i))/\sum_{j=1}^K\exp(f_j(x_i))$)
+  
+  \begin{exerciseSection}
+    The log-likelihood is
+    \begin{align}
+      l &= \sum_{x_i\in R}\sum_{k=1}^Ky_{ik}\log p_k(x_i) \notag\\
+      &= \sum_{x_i\in R}\sum_{k=1}^Ky_{ik} \log\frac{\exp(f_k(x_i) +
+      \gamma_k)}{\sum_{j=1}^K \exp(f_j(x_i) + \gamma_j)} \notag\\
+      &= \sum_{x_i\in R}\sum_{k=1}^K y_{ik}(f_k(x_i) +
+      \gamma_k) - \sum_{x_i\in R} \log\left(\sum_{j=1}^K \exp(f_j(x_i) +
+      \gamma_j)\right)
+    \end{align}
+    when $\gamma_j=0$, $l=\sum_{x_i\in R}\sum_{k=1}^Ky_{ik}\log p_{ik}$.
+    
+    Its first order derivatives are
+    \begin{align}
+      \pdv{l}{\gamma_k} &= \sum_{x_i\in R}y_{ik} - \sum_{x_i\in R}
+      \frac{\exp(f_k(x_i) + \gamma_k)}
+      {\sum_{j=1}^K \exp(f_j(x_i) + \gamma_j)}
+    \end{align}
+    when $\gamma_j=0$, $\partial{l}/\partial{\gamma_k}=\sum_{x_i\in
+    R}(y_{ik} - p_{ik})$.
+    
+    The diagonal entries of the Hessian matrix are
+    \begin{align}
+      \pdv[2]{l}{\gamma_k} &= -\sum_{x_i\in R} \frac{\exp(f_k(x_i) +
+      \gamma_k)\sum_{j=1}^K \exp(f_j(x_i) + \gamma_j) - \exp(2f_k(x_i) +
+      2\gamma_k)} {\left(\sum_{j=1}^K
+      \exp(f_j(x_i) + \gamma_j) \right)^2}
+    \end{align}
+    when $\gamma_j=0$, $\partial^2{l}/\partial{\gamma_k^2}=-\sum_{x_i\in
+    R}p_{ik}(1 - p_{ik})$.
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    To make $\partial{l}/\partial{\gamma_k}=0$, starting from $\gamma_k=0$ the
+    Newton-Raphson update equation becomes
+    \begin{align}
+      \gamma_k^1 \leftarrow \gamma_k - \frac{\partial{l}/\partial{\gamma_k}}
+      {\partial^2{l}/\partial{\gamma_k^2}} = \frac{\sum_{x_i\in
+    R}(y_{ik} - p_{ik})} {\sum_{x_i\in R}p_{ik}(1 - p_{ik})}
+    \end{align}
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    ???
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  At the $m$-th boosting step, we attempt to
+  minimize the muldinomial deviance loss
+  \begin{align}
+    l_m = -\sum_{j=1}^{J_m} \sum_{k=1}^K \sum_{x_i\in R_{jkm}}y_{ik}\log
+    p_{ik}
+  \end{align}
+  where $p_{ik} =\exp(f_{km}(x_i) +
+  \gamma_{jkm})/\sum_{j=1}^K\exp(f_{jm}(x_i) + \gamma_{jlm})$.
+  
+  In step (b).i of Algorithm 4, similar to step 2.(a) from Algorithm 10.3, we
+  evaluate
+  \begin{align}
+    r_{ikm} = -\pdv{l}{f_{km}(x_i)} = y_{ik}-p_{ik}
+  \end{align}
+  at $\gamma_{jlm}=0$.
+  
+  Step (b).ii of Algorithm 4 is exactly the same as the step 2.(b) from
+  Algorithm 10.3.
+  
+  For Step (b).iii of Algorithm 4, we note that $\gamma_{jkm}$ is defined as the
+  Newton-Raphson update using the results from Ex 10.8, 
+  \begin{align}
+    \gamma_{jkm} & = \frac{K-1}{K}\frac{\sum_{x_i\in R_{jkm}} r_{ikm}}
+    {\sum_{x_i\in R_{jkm}} |r_{ikm}|(1 - |r_{ikm}|)} \notag\\
+    &= \frac{K-1}{K} \frac{\sum_{x_i\in R_{jkm}} (y_{ik}-p_{ik})}
+    {|y_{ik}-p_{ik}| (1 - |y_{ik}-p_{ik}|)} \notag\\
+    &= \frac{K-1}{K} \frac{\sum_{x_i\in R_{jkm}} (y_{ik}-p_{ik})}
+    {p_{ik} (1 - p_{ik})} 
+  \end{align}
+  regardless whether $y_{ik}=1$ or $y_{ik}=0$. Consequently, the update equation
+  is simply
+  \begin{align}
+    \gamma_{jkm} & \leftarrow
+    0-\frac{K-1}{K}\frac{\partial{l_M}/\partial{\gamma_{jkm}}}
+    {\partial^2{l_m}/\partial{\gamma_{jkm}^2}}
+  \end{align}
+  
+  And Step (b).iv of Algorithm 4 is exactly the same as the step 2.(d) from
+  Algorithm 10.3.
+\end{exercise}
+
+\begin{exercise}
+  For $K=2$, we have $p_0(x) = 1/(1+\exp(f(x)))$ and $p_0(x) =
+  \exp(f(x))/(1+\exp(f(x)))$, therefore only one tree needs to be grown for
+  $f(x)$. The 2-class multinomial deviance loss function is 
+  \begin{align}
+    L(y, p(x)) &= -\sum_{i=0}^N\sum_{k=0}^1 I(y_i=k)\log(p_k(x)) \notag\\
+    &= -\sum_{i=0}^N
+    I(y_i=0)\log\left(\frac{1}{1+\exp(f(x_i))}\right) -\sum_{i=0}^N
+    I(y_i=1)\log\left(\frac{\exp(f(x_i))}{1+\exp(f(x_i))}\right) \notag\\
+    &= -\sum_{i=0}^N I(y_i=1) f(x_i) +
+    \sum_{i=0}^N\log\left(1+\exp(f(x_i))\right)
+  \end{align}
+  exactly the same as Eq. (10.22).
+\end{exercise}
+
+\begin{exercise}
+  For a tree $f(X)$, collapse all the internal nodes in $X_{\mathcal{C}}$ and
+  repace the value at the resulting node with a weighted mean (according to the
+  number of records in each branch). The resulting tree on $X_{\mathcal{S}}$ is
+  simply $\bar{f}_{\mathcal{S}}(X_{\mathcal{S}})$.
+\end{exercise}
+
+\begin{exercise}
+  Denote $X = [X_1, X_2]^T$, which follows multivariate Gaussian distribution:
+  \begin{align}
+    X\sim\mathcal{N}\left(\mathbf{0}, \left[
+      \begin{array}{cc}
+        1 & \rho \\
+        \rho & 1
+      \end{array}
+    \right]\right)
+  \end{align}
+  using the conditional distribution of multivariate Gaussian
+  \begin{align}
+    \mathbb{E}[f(X_1, X_2)|X_2] = \mathbb{E}[X_1|X_2] = \rho X_2.
+  \end{align}
+\end{exercise}
