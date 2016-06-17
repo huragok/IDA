@@ -1,2 +1,80 @@
 \chapter{Model Inference and Averaging}
 \label{ch:8}
+
+\begin{exercise}
+  Since $\log(\cdot)$ is a concave function, we have
+  \begin{align}
+    \mathbb{E}_q\left[\log(r(Y) / q(Y)) \right] &
+    \leq\log\left(\mathbb{E}_q\left[(r(Y) / q(Y)\right]\right) \notag\\
+    & = \log\left(\int_yr(y)dy \right) \notag \\
+    &= 0
+  \end{align}
+  where equality holds iff $r(Y) = q(Y)$. Consequently
+  \begin{align}
+    R(\theta',\theta) - R(\theta, \theta) & =
+    \mathbb{E}_{\mathbf{T|\mathbf{Z},\theta}}
+    \left[\log\mbox{Pr}(\mathbf{Z}^m|\mathbf{Z},\theta') -
+    \log\mbox{Pr}(\mathbf{Z}^m|\mathbf{Z},\theta)\right] \notag\\
+    &= \mathbb{E}_{\mathbf{T|\mathbf{Z},\theta}}
+    \left[\log\frac{\mbox{Pr}(\mathbf{Z}^m|\mathbf{Z},\theta')}
+    {\mbox{Pr}(\mathbf{Z}^m|\mathbf{Z},\theta)} \right] \notag\\
+    \leq 0
+  \end{align}
+  where equality holds when $\theta=\theta'$.
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    F(\theta',\tilde{P}) &= \mathbb{E}_{\tilde{P}}
+    \left[l_0(\theta',\mathbf{T})\right] -
+    \mathbb{E}_{\tilde{P}}\left[\log\tilde{P}(\mathbf{Z}^m)) \right] \notag\\
+    &= \log P(\mathbf{Z}|\theta') +
+    \mathbb{E}_{\tilde{P}}\left[\frac{P(\mathbf{Z}^m|\mathbf{Z},\theta')}
+    {\tilde{P}(\mathbf{Z}^m)} \right] \notag\\
+    &\leq \log P(\mathbf{Z}|\theta')
+  \end{align}
+  where equality holds iff
+  $\tilde{P}(\mathbf{Z}^m)=P(\mathbf{Z}^m|\mathbf{Z},\theta')$.
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \widehat{\mbox{Pr}}_{U_k}(u) &= \int\mbox{Pr}\left(u|u_l,
+    l\not=k\right) \mbox{Pr}\left(u_l\right)du_l \notag\\
+    &\approx\sum_{t=m}^M \mbox{Pr}\left(u|u_l,
+    l\not=k\right) \frac{\mbox{count}(U_l^{(t)} = u_l)}{M-m+1} \notag\\
+    &= \frac{1}{M-m+1} \sum_{t=m}^M \mbox{Pr}\left(u|U_l^{(t)}, l\not=k\right)
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  Since
+  \begin{align}
+    \hat{f}^*(x) &= \hat{\mu}^*(x) \notag\\
+    &= \mathbf{h}(x)^T(\mathbf{H}^T\mathbf{H})^{-1}\mathbf{H}^T
+    \left(\mathbf{H}(\mathbf{H}^T\mathbf{H})^{-1}\mathbf{H}^T\mathbf{y} +
+    \bm{\epsilon}^* \right) \notag\\
+    & \sim \mathcal{N}(\hat{\mu}(x),
+    \mathbf{h}(x)^T(\mathbf{H}^T\mathbf{H})^{-1}\mathbf{h}(x)\hat{\sigma}^2)
+  \end{align}
+  therefore
+  \begin{align}
+    \hat{f}_{\mbox{bag}}(x) &= \frac{1}{B}\sum_{b=1}^B
+    \hat{f}_b^*(x) \sim \mathcal{N}(\hat{\mu}(x),
+    \frac{1}{B}
+    \mathbf{h}(x)^T(\mathbf{H}^T\mathbf{H})^{-1}\mathbf{h}(x)\hat{\sigma}^2)
+  \end{align}
+  as different bags are independent. Consequently, as
+  $B\rightarrow\infty$, $\hat{f}_{\mbox{bag}}(x) \rightarrow
+  \hat{f}(x) = \hat{\mu}(x)$.
+\end{exercise}
+
+\begin{exercise}[(Wrong problem from Chapter 10?)]
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
+
+\begin{exercise}
+  ???
+\end{exercise}
