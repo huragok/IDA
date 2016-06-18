@@ -1,2 +1,214 @@
 \chapter{Additive Models, Trees, and Related Methods}
 \label{ch:9}
+
+\begin{exercise}
+  To show that $\mathbf{Sy} = \hat{\mathbf{y}} + \mathbf{Sr} $, it is sufficient
+  to show that $\mathbf{S}^2=\mathbf{S}$. For linear regression,
+  \begin{align}
+    \mathbf{S}^2=[\mathbf{H}(\mathbf{H}^T\mathbf{H})^{-1}\mathbf{H}^T]
+    [\mathbf{H}(\mathbf{H}^T\mathbf{H})^{-1}\mathbf{H}^T] 
+    =\mathbf{H}(\mathbf{H}^T\mathbf{H})^{-1}\mathbf{H}^T = \mathbf{S}
+  \end{align}
+  
+  For local linear regression, we have
+  \begin{align}
+    \mathbf{S}^2 & =
+    [\mathbf{B}(\mathbf{B}^T\mathbf{W}\mathbf{B})^{-1}\mathbf{B}^T\mathbf{W}] 
+    [\mathbf{B}(\mathbf{B}^T\mathbf{W}\mathbf{B})^{-1}\mathbf{B}^T\mathbf{W}]
+    \notag\\ &=
+    \mathbf{B}(\mathbf{B}^T\mathbf{W}\mathbf{B})^{-1}\mathbf{B}^T\mathbf{W}
+    \notag \\ &=
+    \mathbf{S} 
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    The $j$-th row-block of Eq. (9.33) corresponds to the following equation:
+    \begin{align}
+      \mathbf{f}_j + \mathbf{S}_j\sum_{k\not=j}\mathbf{f}_k =  \mathbf{S}_j
+      \mathbf{y}
+    \end{align}
+    for $j=1,\ldots,p$. The solution to $\mathbf{f}_j$ from this equation alone
+    is
+    \begin{align}
+      \mathbf{f}_j\leftarrow \mathbf{S}_j\left[\mathbf{y} -
+      \sum_{k\not=j}\mathbf{f}_k\right]
+    \end{align}
+  \end{exerciseSection}
+  
+  \begin{exerciseSection}
+    Denote the eigen decomposition of $\mathbf{S}_1$ and $\mathbf{S}_1$ as
+    $\mathbf{S}_1 = \mathbf{U}_1\mathbf{D}_1\mathbf{U}_1^T$ and $\mathbf{S}_2 =
+    \mathbf{U}_2\mathbf{D}_2\mathbf{U}_2^T$.
+    
+    Let $\tilde{\mathbf{f}}_1 = \mathbf{U}_1^T\mathbf{f}_1$, $\tilde{\mathbf{f}}_2 =
+    \mathbf{U}_2^T\mathbf{f}_2$ and $\tilde{\mathbf{y}}_1 =
+    \mathbf{D}_1\mathbf{U}_1^T\mathbf{y}$, $\tilde{\mathbf{y}}_2 =
+    \mathbf{D}_2\mathbf{U}_2^T\mathbf{y}$. As a result, the 1-step update can be
+    written as
+    \begin{subequations}
+      \begin{align}
+        &\mathbf{f}_1 \leftarrow \mathbf{S}_1(\mathbf{y}-\mathbf{f}_2)
+        \Longrightarrow  \tilde{\mathbf{f}}_1 \leftarrow
+        \tilde{\mathbf{y}}_1- \mathbf{D}_1\tilde{\mathbf{f}}_2\\
+        &\mathbf{f}_2 \leftarrow \mathbf{S}_2(\mathbf{y}-\mathbf{f}_1)
+        \Longrightarrow  \tilde{\mathbf{f}}_2 \leftarrow
+        \tilde{\mathbf{y}}_2- \mathbf{D}_2\tilde{\mathbf{f}}_1
+      \end{align}
+    \end{subequations}
+    thus the 2-step update can be written as
+    \begin{subequations}
+      \begin{align}
+        & \tilde{\mathbf{f}}_1 \leftarrow
+        (\tilde{\mathbf{y}}_1-
+        \mathbf{D}_1\tilde{\mathbf{y}}_2) + \mathbf{D}\tilde{\mathbf{f}}_1\\
+        & \tilde{\mathbf{f}}_2 \leftarrow
+        (\tilde{\mathbf{y}}_2-
+        \mathbf{D}_2\tilde{\mathbf{y}}_1) + \mathbf{D}\tilde{\mathbf{f}}_2
+      \end{align}
+    \end{subequations} 
+    where $\mathbf{D} = \mathbf{D}_1\mathbf{D}_2 = \mathbf{D}_2\mathbf{D}_1$ is
+    a diagonal matrix with entries in $[0, 1)$. Consequently, the iterative
+    update converges on
+    \begin{subequations}
+      \begin{align}
+        & \tilde{\mathbf{f}}_1 \rightarrow \mathbf{D}_S (\tilde{\mathbf{y}}_1-
+        \mathbf{D}_1\tilde{\mathbf{y}}_2)\\
+        & \tilde{\mathbf{f}}_2 \rightarrow \mathbf{D}_S (\tilde{\mathbf{y}}_2-
+        \mathbf{D}_2\tilde{\mathbf{y}}_1)
+      \end{align}
+    \end{subequations}
+    where
+    \begin{align}
+      \mathbf{D}_S = \mathbf{I} + \sum_{t=1}^{\infty}\mathbf{D}^t = (\mathbf{I}
+      - \mathbf{D})^{-1}
+    \end{align}
+    Since $\mathbf{f}_1$ and $\mathbf{f}_2$ are so updated that
+    $\mathbf{f}_1\in\mbox{span}(\mathbf{U}_1)$, 
+    $\mathbf{f}_2\in\mbox{span}(\mathbf{U}_2)$, we have
+    \begin{subequations}
+      \begin{align}
+        & \mathbf{f}_1 \rightarrow \mathbf{U}_1\mathbf{D}_S (\tilde{\mathbf{y}}_1-
+        \mathbf{D}_1\tilde{\mathbf{y}}_2)\\
+        & \mathbf{f}_2 \rightarrow \mathbf{U}_2\mathbf{D}_S
+        (\tilde{\mathbf{y}}_2- \mathbf{D}_2\tilde{\mathbf{y}}_1).
+      \end{align}
+    \end{subequations}
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}
+  A backfitting procedure with orthogonal projections suggests that the eigen
+  decomposition of $\mathbf{S}_j$ can be written as $\mathbf{S}_j =
+  \mathbf{U}_j\mathbf{U}_j^T$ and $\mathbf{U}_i^T\mathbf{U}_j=\mathbf{0}$ for
+  $i\not=j$. Denote the SVD of $\mathbf{D}$ as $\mathbf{D} = \mathbf{U\Sigma
+  V}^T$, then (with column shift) we have $\mathbf{U} = [\mathbf{U}_1,\ldots,
+  \mathbf{U}_p]$.
+  
+  Note that the solution to the backfitting equations is $\mathbf{f}_j =
+  \mathbf{U}_j\mathbf{U}_j^T\mathbf{y}$. Consequently,
+  \begin{align}
+    \mathbf{f} &= \mathbf{D}\bm{\beta} = \mathbf{UU}^T\mathbf{y} 
+    = \sum_{j=1}^p \mathbf{U}_j\mathbf{U}_j^T\mathbf{y} 
+    = \sum_{j=1}^p \mathbf{f}_j
+  \end{align}
+  thus the backfitting procedure and the least squares are equivalent.
+\end{exercise}
+
+\begin{exercise}
+  Similar to Ex. (9. 2), the backfitting equations are represented as
+  \begin{align}
+    \left[
+      \begin{array}{cc}
+        \mathbf{I} & \mathbf{S} \\
+        \mathbf{S} & \mathbf{I} 
+      \end{array}
+    \right]
+    \left[
+      \begin{array}{c}
+        \mathbf{f}_1 \\
+        \mathbf{f}_2
+      \end{array}
+    \right] = \left[
+      \begin{array}{c}
+        \mathbf{Sy} \\
+        \mathbf{Sy}
+      \end{array}
+    \right]
+  \end{align}
+  The 1-step updating equations are
+  \begin{subequations}
+    \begin{align}
+      & \mathbf{f}_1 \leftarrow \mathbf{S}(\mathbf{y} - \mathbf{f}_2) \\
+      & \mathbf{f}_2 \leftarrow \mathbf{S}(\mathbf{y} - \mathbf{f}_1)
+    \end{align}
+  \end{subequations}
+  thus the 2-step updating equations are
+  \begin{subequations}
+    \begin{align}
+      & \mathbf{f}_1 \leftarrow (\mathbf{S} -\mathbf{S}^2)\mathbf{y} +
+      \mathbf{S}^2\mathbf{f}_1 \\
+      & \mathbf{f}_2 \leftarrow (\mathbf{S} -\mathbf{S}^2)\mathbf{y} +
+      \mathbf{S}^2\mathbf{f}_2
+    \end{align}
+  \end{subequations}
+  Since the eigenvalues of $\mathbf{S}$ are in $[0, 1)$, the iteration converges
+  on
+  \begin{align}
+    \mathbf{f}_1 = \mathbf{f}_2 & \rightarrow
+    \left(\sum_{t=0}^{\infty}\mathbf{S}^{2t}\right) (\mathbf{S}
+    -\mathbf{S}^2)\mathbf{y} \notag\\
+    &= (\mathbf{I} - \mathbf{S}^{2})^{-1} (\mathbf{S}
+    -\mathbf{S}^2)\mathbf{y} \notag\\
+    &= (\mathbf{I} + \mathbf{S})^{-1} \mathbf{Sy}
+  \end{align}
+  as $(\mathbf{I} + \mathbf{S})$ and $(\mathbf{I} - \mathbf{S})$ are both
+  reversible. Consequently, the backfitting residual converges to
+  \begin{align}
+    \mathbf{r}_1 = \mathbf{y} - (\mathbf{f}_1 + \mathbf{f}_2) = (\mathbf{I} +
+    \mathbf{S})^{-1}(\mathbf{I} - \mathbf{S}) \mathbf{y} = \mathbf{U}
+    (\mathbf{I} + \mathbf{D})^{-1} (\mathbf{I} - \mathbf{D})\mathbf{U}^T\mathbf{y}
+  \end{align}
+  where $\mathbf{S} = \mathbf{UDU}^T$ is the eigen decomposition. In comparison,
+  the single-fit residual is $\mathbf{r}_2 =(\mathbf{I} - \mathbf{S}) \mathbf{y}
+  = \mathbf{U} (\mathbf{I} - \mathbf{D})\mathbf{U}^T\mathbf{y}$, therefore
+  \begin{align}
+    \|\mathbf{r}_1 \|^2 &= \sum_{i=1}^N \frac{(1-d_i)^2}{(1+d_i)^2}\tilde{y}_i^2
+    \leq \sum_{i=1}^N (1-d_i)^2\tilde{y}_i^2 = \|\mathbf{r}_2 \|^2 
+  \end{align}
+  where $d_i$ is the $i$-th diagonal entry of $\mathbf{D}$ and $\tilde{y}_i$
+  is the $i$-th entry of $\mathbf{U}^T\mathbf{y}$.
+\end{exercise}
+
+\begin{exercise}
+  \begin{exerciseSection}
+    Consider a tree with $m$ leaf nodes/regions,
+    \begin{align}
+      \sum_{i=1}^N\mbox{cov}(y_i, \hat{y}_i) &= \sum_{r=1}^m \sum_{i\in R_r}
+      \mbox{cov}(y_i, \hat{y}_i) = \sum_{r=1}^m \sum_{i\in R_r}
+      \mathbb{E}\left[\epsilon_i \frac{\sum_{j\in R_r}\epsilon_j}{|R_r|}\right] \notag\\
+      &= \sum_{r=1}^m \sum_{i\in R_r}
+      \mathbb{E}\left[\frac{\epsilon_i^2}{|R_r|}\right] = m\sigma^2
+    \end{align}
+    therefore the degree of freedom is $m$.
+  \end{exerciseSection}
+  \begin{exerciseSection}
+    (Program)
+  \end{exerciseSection}
+  \begin{exerciseSection}
+    (Program)
+  \end{exerciseSection}
+  \begin{exerciseSection}
+    (Program)
+  \end{exerciseSection}
+  \begin{exerciseSection}
+    We could construct $\mathbf{S}$ as a block-diagonal matrix with $m$ diagonal
+    block entries. The $r$-th block is $1/(|R_r|)$ times a $|R_r|$-by-$|R_r|$
+    all 1 matrix. Consequently $\mbox{tr}(\mathbf{S}) = m$ which is the same as
+    the result in (a).
+  \end{exerciseSection}
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
