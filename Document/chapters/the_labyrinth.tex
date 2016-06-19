@@ -1,2 +1,213 @@
 \chapter{Kernel Smoothing Methods}
 \label{ch:6}
+
+\begin{exercise}
+  For Gaussian kernel, since $K_{\lambda}(x_0,x_i)$ is differentiable w.r.t.
+  $x_0$, we have
+  \begin{align}
+    \dv{\hat{f}(x_0)}{x_0} &= \frac{\left(\sum_{i=1}^Ny_iK'_{\lambda}(x_0,
+    x_i)\right) \left(\sum_{i=1}^NK_{\lambda}(x_0,
+    x_i)\right) - \left(\sum_{i=1}^NK'_{\lambda}(x_0,
+    x_i)\right)\left(\sum_{i=1}^Ny_iK'_{\lambda}(x_0,
+    x_i)y_i\right)} {\left(\sum_{i=1}^NK_{\lambda}(x_0,
+    x_i)\right)^2}
+  \end{align}
+  
+  Since Epanechnikov kernel is not differentiable, the corresponding
+  Nadaraya-Watson kernel smooth function is not differentiable, either.
+\end{exercise}
+
+\begin{exercise}
+  Denote $\mathbf{l}(x_0) = [l_1(x_0),\ldots,l_N(x_0)]^T$ as a $N$-by-1 vector.
+  From Eq. (6.8) we can see that
+  \begin{align}
+    \mathbf{l}^T(x_0) &= \mathbf{b}(x_0)^T
+    \left(\mathbf{B}^T\mathbf{W}(x_0)\mathbf{B}\right)^{-1}
+    \mathbf{B}^T\mathbf{W}(x_0)
+  \end{align}
+  therefore
+  \begin{align}
+    \mathbf{l}^T(x_0)\mathbf{B} &= \left[\sum_{i=1}^Nl_i(x_0),\ldots,
+    \sum_{i=1}^Nl_i(x_0)x_i^{k}\right] \notag\\
+    &= \mathbf{b}^T(x_0) = [1, \ldots, x_0^{k}]
+  \end{align}
+  which suggests that 
+  \begin{align}
+    \sum_{i=1}^Nl_i(x_0)x_i^{j} = x_0^j,\,j=0.\ldots,k
+  \end{align}
+  \begin{itemize}
+    \item When $j=0$, we have $\sum_{i=1}^Nl_i(x_0) = 1$.
+    \item When $j>0$, since 
+    \begin{align}
+      \sum_{i=1}^Nl_i(x_0)x_i^{j} &= x_0^j  = x_0^l\cdot x_0^{j-l} =
+      \sum_{i=1}^Nl_i(x_0)x_i^{l}x_0^{j-l}
+    \end{align}
+    for any $0\leq l\leq j$, it is easy to verify that 
+    \begin{align}
+      \sum_{i=1}^Nl_i(x_0)(x_i - x_0)^j = 0.
+    \end{align}
+    which suggests that the bias is 0 to order $k$ according to Eq. (6.10). 
+  \end{itemize}
+  
+\end{exercise}
+
+\begin{exercise}
+  ???
+\end{exercise}
+
+\begin{exercise}
+  The Mahalanobis choice of $\mathbf{A} = \mathbf{\Sigma}^{-1}$ has the effect
+  of ``eqaulizaing'' the distance measure in each dimension according to how the
+  data vary over that dimension, while $\mathbf{A} = \mathbf{I}$ results in the
+  Euclidean distance which ignores the distribution of the data $\mathbf{X}$.
+  
+  A kernel that downweightshigh-frequency components in the
+  distance metric can be constructed as $\mathbf{A} = \mathbf{F}^T\mathbf{F}$,
+  where the rows of $\mathbf{F}$ are the cyclic-shifted version of a low-pass
+  filter. In this way, $\mathbf{Fx}$ represents the circular convolution of the
+  filter and the samples $\mathbf{x}$ which rejects high frequency components.
+  To ignore high-frequency components completely, we can simply define
+  $\mathbf{F}$ as a all-1 matrix.
+\end{exercise}
+
+\begin{exercise}
+  Denote the binary response indicator vector for the $i$-th record as
+  $\mathbf{y}_i$, such that $y_{ij}=1$ if $g_i=j$ and otherwise $y_{ij}=0$,
+  $j=1,\ldots,J$. Then the local log-likelihood can be rewritten as
+  \begin{align}
+    l(\bm{\beta}) &= \sum_{i=1}^N K_{\lambda}(x_0, x_i)
+    \left[\sum_{j=1}^{J-1}y_{ij}\log\mbox{Pr}(G=j|X=x_i)  +
+    \left(1-\sum_{j=1}^{J-1}y_{ij}\right) \log\mbox{Pr}(G=J|X=x_i) \right]
+    \notag\\ &=
+    \sum_{i=1}^N K_{\lambda}(x_0, x_i)
+    \left[\sum_{j=1}^{J-1}y_{ij}\beta_{j0}(x_0)
+    -\log\left(1+\sum_{j=1}^{J-1} \exp(\beta_{j0}(x_0)) \right) \right]
+  \end{align} 
+  To maximize the log-likelihood, setting the derivative w.r.t $\beta_{j0}$ to 0
+  results in
+  \begin{align}
+    \pdv{l(\bm{\beta})}{\beta_{j0}(x_0)} = \sum_{i=1}^N K_{\lambda}(x_0,
+    x_i)\left(y_{ij} - p_j\right) = 0
+  \end{align}
+  where
+  \begin{align}
+    p_j &= \frac{\exp(\beta_{j0}(x_0))}{1 + \sum_{k=1}^{J-1}
+    \exp(\beta_{k0}(x_0))}
+  \end{align}
+  therefore $\beta_{j0}, j=1,\ldots,J-1$ should be selected such that
+  \begin{align}
+    p_j &= \frac{\sum_{i=1}^N K_{\lambda}(x_0,x_i)y_{ij}} {\sum_{i=1}^N
+    K_{\lambda}}
+  \end{align}
+  which amounts to smoothing the binary response indicators for each class
+  separately using a Nadaraya–Watson kernel smoother with kernel weights
+  $K_{\lambda}(x_0,x_i)$.
+\end{exercise}
+
+\begin{exercise}
+  Divide the set of monomials into $Z$ and $X$. Define kernel on $Z$ and use
+  $X$ as predictors. Given a new input $[\mathbf{z}_0, \mathbf{x}_0]$, fit local
+  regression model as
+  \begin{align}
+    \min_{\alpha(\mathbf{z}_0),
+    \bm{\beta}(\mathbf{z}_0)}\sum_{i=1}^NK_{\lambda}(\mathbf{z}_0,\mathbf{z}_i)
+    (y_i-\alpha(\mathbf{z}_0) - \mathbf{x}_i^T\bm{\beta}(\mathbf{z}_0) )
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \frac{1}{N} \sum_{k=1}^N \sum_{i\not=k}
+    K_{\lambda}(\mathbf{x}_i,\mathbf{x}_k) (y_i - \alpha_k -
+    \mathbf{x}_i^T\bm{\beta}_k)
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  The Parzen density estimate for $X, Y$ jointly and $X$ alone are
+  \begin{subequations}
+    \begin{align}
+      \hat{f}_{X,Y}(x,y) & = \frac{1}{N}\sum_{i=1}^N
+      \phi_{\lambda}(x-x_i)\phi_{\lambda}(y-y_i) \\
+      \hat{f}_{X}(x) & = \frac{1}{N}\sum_{i=1}^N
+      \phi_{\lambda}(x-x_i)
+    \end{align}
+  \end{subequations}
+  respectively, therefore
+  \begin{align}
+    \mathbb{E}[Y|X] &= \int y \frac{\hat{f}_{X,Y}(x,y)}{\hat{f}_{X}(x)}dy
+    \notag\\ &=
+    \frac{\sum_{i=1}^N \phi_{\lambda}(x-x_i) \int y\phi_{\lambda}(y-y_i)dy}
+    {\sum_{i=1}^N\phi_{\lambda}(x-x_i)}
+  \end{align}
+  which is a Nadaraya-Watson estimator. 
+  
+  For classification we adopt the
+  product kernel $\phi_{\lambda}(X)\delta(g)$, where $\delta(\cdot)$ is the
+  Kronecker delta function. As a result, the Parzen density estimate for $X, G$
+  jointly is
+  \begin{align}
+    \hat{f}_{X,G}(x,g) & = \frac{1}{N}\sum_{i=1}^N
+    \phi_{\lambda}(x-x_i)\delta(g=g_i)
+  \end{align}
+  therefore the probability estimation is
+  \begin{align}
+    \mbox{Pr}(G=g|X=x) = \frac{\hat{f}_{X,G}(x,g)} {\hat{f}_{X}(x)} =
+    \frac{\sum_{g_i=g}\phi_{\lambda}(x-x_i)} {\sum_{i=1}^N\phi_{\lambda}(x-x_i)}
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  Naive bayesian model makes a stronger assumption that given a class $G = j$
+  the features $X_k$ are independent as in Eq. (6.27), which leads to the
+  additive form of the log-likelihood function in Eq. (6.27)  On the contrary
+  the GAM model directly assumes a additive form of the log-likelihood function
+  (Eq. (9.8)) and no specific form of the distribution function is assumed.
+  
+  Naive bayesian model enables the estimation of the 1-D density function of the
+  features conditioned on class $f_{jk}$ , while in the GAM model the additive
+  components $f_1,\ldots, f_p$ are estimated by a iterative backfitting
+  algorithm.
+\end{exercise}
+
+\begin{exercise}
+  \begin{align}
+    \mathbb{E}\left[\mbox{ASR}(\lambda)\right] & = \frac{1}{N}
+    \mathbb{E}\left[ \|\mathbf{y} - \mathbf{S}_{\lambda}\mathbf{y}\|^2\right]
+    \notag\\
+    &= \frac{1}{N}\mathbb{E}\left[\|(\mathbf{f} + \bm{\epsilon}) -
+    \mathbf{S}_{\lambda}(\mathbf{f} + \bm{\epsilon})\|^2 \right] \notag\\
+    &= \frac{1}{N} \|\mathbf{f} - \mathbf{S}_{\lambda}\mathbf{f}\|^2 +
+    \frac{1}{N} \mathbb{E}\left[\|\bm{\epsilon} -
+    \mathbf{S}_{\lambda}\bm{\epsilon})\|^2 \right] \notag \\
+    &= \frac{1}{N} \|\mathbf{f} - \mathbf{S}_{\lambda}\mathbf{f}\|^2 +
+    \frac{\left[N - 2\mbox{tr}(\mathbf{S}_{\lambda}) +
+    \mbox{tr}(\mathbf{S}_{\lambda}\mathbf{S}_{\lambda}^T)\right]\sigma^2}{N}
+  \end{align}
+  \begin{align}
+    \mbox{PE}(\lambda) & = \frac{1}{N}\mathbb{E}\left[\|\mathbf{y}^* -  
+    \mathbf{S}_{\lambda}\mathbf{y}\|^2 \right] \notag\\
+    &= \frac{1}{N}\mathbb{E}\left[\|(\mathbf{f} + \bm{\epsilon}^*) -
+    \mathbf{S}_{\lambda}(\mathbf{f} + \bm{\epsilon})\|^2 \right] \notag\\
+    &= \frac{1}{N} \|\mathbf{f} - \mathbf{S}_{\lambda}\mathbf{f}\|^2 +
+    \frac{1}{N} \mathbb{E}\left[\|\bm{\epsilon}^* -
+    \mathbf{S}_{\lambda}\bm{\epsilon})\|^2 \right] \notag \\
+    &= \frac{1}{N} \|\mathbf{f} - \mathbf{S}_{\lambda}\mathbf{f}\|^2 +
+    \frac{\left[N +
+    \mbox{tr}(\mathbf{S}_{\lambda}\mathbf{S}_{\lambda}^T)\right]\sigma^2}{N}
+  \end{align}
+  therefore
+  \begin{align}
+    \mbox{PE}(\lambda) & =  \mathbb{E}\left[\mbox{ASR}(\lambda)\right] +
+    \frac{2\mbox{tr}(\mathbf{S}_{\lambda})\sigma^2}{N} =
+    \mathbb{E}\left[ C_{\lambda}\right]
+  \end{align}
+\end{exercise}
+
+\begin{exercise}
+  The likelihood is maximized to $+\infty$ by setting any $\bm{\mu}_m$ to a
+  record $\mathbf{x}_i$ and setting $\mathbf{\Sigma} = \mathbf{0}$.
+\end{exercise}
+
+\begin{exercise}[(Program)]
+\end{exercise}
